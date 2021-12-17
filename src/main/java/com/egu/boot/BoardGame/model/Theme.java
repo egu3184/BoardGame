@@ -1,5 +1,7 @@
 package com.egu.boot.BoardGame.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,7 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 
 import lombok.Data;
 
@@ -18,10 +22,9 @@ public class Theme {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
-	@Enumerated(EnumType.STRING)
+
 	@Column(nullable = false)
-	private ThemeName themeName;
+	private String themeName;
 	
 	@Lob
 	private String description;
@@ -37,6 +40,9 @@ public class Theme {
 	private String difficulty;
 	
 	private String Genre;
+	
+	@OneToMany(mappedBy = "theme")
+	private List<Slot> slots;
 	
 	
 	

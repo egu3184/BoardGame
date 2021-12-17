@@ -9,7 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.Data;
 
@@ -21,14 +23,15 @@ public class Slot {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
+	@JoinColumn(name="themeId")
 	private Theme theme;
 	
 	@Column(nullable = false)
-	private LocalDate slotDate;
+	private String slotDate;
 	
 	@Column(nullable = false)
-	private LocalTime slotTime;
+	private String slotTime;
 	
 	@Column(nullable = false)
 	private boolean isOpened;
