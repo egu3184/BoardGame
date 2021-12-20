@@ -1,6 +1,7 @@
 package com.egu.boot.BoardGame.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,8 +33,8 @@ public class User {
 	@Column(length = 200, unique = true, nullable=false)
 	private String email;
 	
-	@CreationTimestamp
-	private Timestamp createDate;
+	@Column
+	private LocalDateTime createDate;
 	
 	@Column(length = 30, nullable = false)
 	private String phoneNumber;
