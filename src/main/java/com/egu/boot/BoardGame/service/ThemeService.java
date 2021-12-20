@@ -1,8 +1,12 @@
 package com.egu.boot.BoardGame.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.egu.boot.BoardGame.model.Theme;
@@ -39,6 +43,12 @@ public class ThemeService {
 			return new IllegalArgumentException("등록된 테마가 아닙니다.");
 		});
 		themeRepository.deleteById(id);
+	}
+
+	@Transactional
+	public Page<Theme> 테마리스트(Pageable pageable) {
+	
+		return themeRepository.findAll(pageable);
 	}
 	
 	

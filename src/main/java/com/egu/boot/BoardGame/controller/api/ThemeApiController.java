@@ -1,6 +1,12 @@
 package com.egu.boot.BoardGame.controller.api;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.model.Theme;
+import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.service.ThemeService;
+import com.egu.boot.BoardGame.service.api.ResponseService;
 
 @RestController
 public class ThemeApiController {
@@ -18,29 +26,37 @@ public class ThemeApiController {
 	@Autowired
 	private ThemeService themeService;
 	
-	//등록
+	@Autowired
+	ResponseService responseService;
+	
+	//테마 등록
 	@PostMapping("/themes")
-	public String saveTheme(@RequestBody Theme theme) {
+	public CommonResult saveTheme(@RequestBody Theme theme) {
 		themeService.테마저장(theme);
-		return "테마 저장 완료";
+		return responseService.getSuccessResult();
 	}
 	
-	//수정
+	//테마 수정
 	@PutMapping("/themes/{id}")
-	public String editTheme(@PathVariable int id, @RequestBody Theme requestTheme) {
+	public CommonResult editTheme(@PathVariable int id, @RequestBody Theme requestTheme) {
 		themeService.테마수정(id, requestTheme);
-		return "테마 수정 완료";
+		return responseService.getSuccessResult();
 	}
 	
-	//삭제
-	@DeleteMapping("themes/{id}")
-	public String deleteTheme(@PathVariable int id) {
+	//테마 삭제
+	@DeleteMapping("/themes/{id}")
+	public CommonResult deleteTheme(@PathVariable int id) {
 		themeService.테마삭제(id);
-		return "테마 삭제 완료";
+		return responseService.getSuccessResult();
 	}
 	
-	//조회
-	//조회는 모델을 던지나?
+	//테마 리스트 조회
+	@GetMapping("/theme")
+	public CommonResult selectTheme(
+			@PageableDefault(sort = "id", direction = Direction.DESC) Pageable pageable) {
+		Page<Theme> list =  themeService.테마리스트(pageable);
+		return responseService.getPageListResult(list);
+	}
 	
 	
 	
