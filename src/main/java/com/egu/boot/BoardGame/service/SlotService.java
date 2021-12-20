@@ -3,6 +3,8 @@ package com.egu.boot.BoardGame.service;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.egu.boot.BoardGame.model.Slot;
@@ -57,6 +59,16 @@ public class SlotService {
 			return new IllegalArgumentException("등록된 슬롯이 아닙니다.");
 		});
 		slotRepository.deleteById(id);
+	}
+
+	@Transactional
+	public Slot 슬롯조회(int id) {
+		return slotRepository.findById(id).orElseGet(null);
+	}
+
+	@Transactional
+	public Page<Slot> 슬롯리스트조회(Pageable pageable) {
+		return slotRepository.findAll(pageable);
 	}
 	
 	
