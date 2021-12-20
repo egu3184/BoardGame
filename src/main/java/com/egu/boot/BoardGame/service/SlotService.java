@@ -30,8 +30,7 @@ public class SlotService {
 		});
 		Slot slot = new Slot();
 		slot.setTheme(theme);
-		slot.setSlotDate(slotDto.getSlotDate());
-		slot.setSlotTime(slotDto.getSlotTime());
+		slot.setSlotDateTime(slotDto.getSlotDateTime());
 		slot.setOpened(true);
 		slot.setReserved(false);
 		slotRepository.save(slot);
@@ -48,14 +47,14 @@ public class SlotService {
 		
 		slot.setOpened(requestSlot.isOpened());
 		slot.setReserved(requestSlot.isReserved());
-		slot.setSlotDate(requestSlot.getSlotDate());
-		slot.setSlotTime(requestSlot.getSlotTime());
+		slot.setSlotDateTime(requestSlot.getSlotDateTime());
+	
 	}
 
 	//삭제 
 	@Transactional
 	public void 슬롯삭제(int id) {
-		Slot slot = slotRepository.findById(id).orElseThrow(()->{
+		slotRepository.findById(id).orElseThrow(()->{
 			return new IllegalArgumentException("등록된 슬롯이 아닙니다.");
 		});
 		slotRepository.deleteById(id);

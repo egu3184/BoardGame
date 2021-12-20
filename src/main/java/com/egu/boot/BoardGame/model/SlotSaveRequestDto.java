@@ -1,5 +1,8 @@
 package com.egu.boot.BoardGame.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class SlotSaveRequestDto {
 
 	int themeId;
-	String slotDate;
-	String slotTime;
+	LocalDateTime slotDateTime;
 	
 }
