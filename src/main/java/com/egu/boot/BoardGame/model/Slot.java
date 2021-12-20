@@ -1,6 +1,7 @@
 package com.egu.boot.BoardGame.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Column;
@@ -28,11 +29,8 @@ public class Slot {
 	private Theme theme;
 	
 	@Column(nullable = false)
-	private LocalDate slotDate;
-	
-	@Column(nullable = false)
-	private LocalTime slotTime;
-	
+	private LocalDateTime slotDateTime;
+
 	@Column(nullable = false)
 	private boolean isOpened;
 	
