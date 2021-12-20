@@ -28,10 +28,10 @@ public class Slot {
 	private Theme theme;
 	
 	@Column(nullable = false)
-	private String slotDate;
+	private LocalDate slotDate;
 	
 	@Column(nullable = false)
-	private String slotTime;
+	private LocalTime slotTime;
 	
 	@Column(nullable = false)
 	private boolean isOpened;
