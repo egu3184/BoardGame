@@ -3,6 +3,8 @@ package com.egu.boot.BoardGame.service;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +31,18 @@ public class UserService {
 		
 		return userRepository.save(user);
 	}
+
+	@Transactional
+	public User 회원찾기(int id) {
+		return userRepository.findById(id).orElseGet(null);
+	}
+
+	@Transactional
+	public Page<User> 회원리스트찾기(Pageable pageable) {
+		Page<User> list = userRepository.findAll(pageable);
+		return list;
+	}
+	
+	
 	
 }
