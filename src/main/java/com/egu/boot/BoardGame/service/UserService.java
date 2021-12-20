@@ -20,14 +20,14 @@ public class UserService {
 	private BCryptPasswordEncoder encoder;
 	
 	@Transactional
-	public void 회원가입(User user) {
+	public User 회원가입(User user) {
 		String rawPassword = user.getPassword();
 		String encPassword = encoder.encode(rawPassword);
 		user.setPassword(encPassword);
 		user.setRole(RoleType.USER);
 		user.setRegisterd(true);
 		
-		userRepository.save(user);
+		return userRepository.save(user);
 	}
 	
 }

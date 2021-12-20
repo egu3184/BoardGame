@@ -54,13 +54,13 @@ public class SlotApiController {
 	}
 	
 	@GetMapping("/slots/{id}")
-	public SingleResult<Slot> selectSlot(@PathVariable int id){
+	public SingleResult<Slot> findSlot(@PathVariable int id){
 		Slot slot = slotService.슬롯조회(id);
 		return responseService.getSingleResult(slot);
 	}
 	
 	@GetMapping("/slots")
-	public ListResult<Slot> selectListSlot(Pageable pageable){
+	public ListResult<Slot> findAllSlot(Pageable pageable){
 		Page<Slot> list = slotService.슬롯리스트조회(pageable);
 		return responseService.getPageListResult(list);
 	}
