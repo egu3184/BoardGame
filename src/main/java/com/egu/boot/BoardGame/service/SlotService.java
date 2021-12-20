@@ -68,7 +68,7 @@ public class SlotService {
 
 	@Transactional
 	public Page<Slot> 슬롯리스트조회(Pageable pageable) {
-		return slotRepository.findAll(pageable);
+		return slotRepository.findAllByIsOpenedAndIsReserved(true, false, pageable);
 	}
 	
 	
