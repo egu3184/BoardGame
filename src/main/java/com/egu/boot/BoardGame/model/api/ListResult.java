@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class ListResult<T> extends CommonResult {
-
+ 
 	private List<T> list;
 }

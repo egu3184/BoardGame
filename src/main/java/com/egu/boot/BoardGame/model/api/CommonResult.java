@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CommonResult {
-
+ 
 	@ApiModelProperty(value = "응답 성공 여부 : true / false")
 	private boolean success;
 	
