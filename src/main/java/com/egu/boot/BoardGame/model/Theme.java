@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 @Data
@@ -42,6 +44,7 @@ public class Theme {
 	private String Genre;
 	
 	@OneToMany(mappedBy = "theme")
+	@JsonIgnoreProperties({"theme"})	//무한 참조 방지
 	private List<Slot> slots;
 	
 	
