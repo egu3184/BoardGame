@@ -1,5 +1,7 @@
 package com.egu.boot.BoardGame.service;
 
+import java.time.LocalDateTime;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ public class UserService {
 		user.setPassword(encPassword);
 		user.setRole(RoleType.USER);
 		user.setRegisterd(true);
+		user.setCreateDate(LocalDateTime.now());
 		
 		return userRepository.save(user);
 	}
@@ -41,6 +44,12 @@ public class UserService {
 	public Page<User> 회원리스트찾기(Pageable pageable) {
 		Page<User> list = userRepository.findAll(pageable);
 		return list;
+	}
+
+	@Transactional
+	public void 회원수정(User requestUser) {
+		
+		
 	}
 	
 	
