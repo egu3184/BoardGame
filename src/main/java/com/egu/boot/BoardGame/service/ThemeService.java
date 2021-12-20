@@ -39,7 +39,7 @@ public class ThemeService {
 	
 	@Transactional
 	public void 테마삭제(int id) {
-		Theme theme =  themeRepository.findById(id).orElseThrow(()->{
+		themeRepository.findById(id).orElseThrow(()->{
 			return new IllegalArgumentException("등록된 테마가 아닙니다.");
 		});
 		themeRepository.deleteById(id);
@@ -47,8 +47,12 @@ public class ThemeService {
 
 	@Transactional
 	public Page<Theme> 테마리스트(Pageable pageable) {
-	
 		return themeRepository.findAll(pageable);
+	}
+
+	@Transactional
+	public Theme 테마조회(int id) {
+		return themeRepository.findById(id).orElseGet(null);
 	}
 	
 	

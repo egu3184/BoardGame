@@ -52,12 +52,18 @@ public class ThemeApiController {
 	
 	//테마 리스트 조회
 	@GetMapping("/theme")
-	public CommonResult selectTheme(
+	public CommonResult selectThemeList(
 			@PageableDefault(sort = "id", direction = Direction.DESC) Pageable pageable) {
 		Page<Theme> list =  themeService.테마리스트(pageable);
 		return responseService.getPageListResult(list);
 	}
 	
+	//테마 조회
+	@GetMapping("/theme/{id}")
+	public CommonResult selectTheme(@PathVariable int id) {
+		Theme theme = themeService.테마조회(id);
+		return responseService.getSingleResult(theme);
+	}
 	
 	
 	
