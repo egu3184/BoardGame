@@ -48,4 +48,11 @@ public class Reservation {
 	@JoinColumn(name="slotId")
 	private Slot slot;
 	
+	@Column(nullable = false)
+	private String guestName;
+	
+	@Column(nullable = false)
+	private String phoneNumber;
+	
+	
 }
