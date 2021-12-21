@@ -59,15 +59,16 @@ public class SlotApiController {
 	}
 	
 	//슬롯 검색 조회
-	@GetMapping(value="/slots/{id}", params="startDateTime")
-	public ListResult<Slot> findSlot(@PathVariable int id,
+	@GetMapping(value="/slots", params="startDateTime")
+	public ListResult<Slot> findSlot(
 			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam("startDateTime") LocalDateTime startDateTime,
 			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam("endDateTime") LocalDateTime endDateTime,
 			@PageableDefault(direction = Direction.DESC, sort = "id") Pageable pageable
 			){
-		Page<Slot> list= slotService.슬롯검색(id,startDateTime, endDateTime, pageable);
+
+		Page<Slot> list= slotService.슬롯검색(startDateTime, endDateTime, pageable);
 		return responseService.getPageListResult(list);
 	}
 	
