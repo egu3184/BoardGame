@@ -1,6 +1,7 @@
 package com.egu.boot.BoardGame.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +34,7 @@ public class Reservation {
 	
 	@CreationTimestamp
 	@Column(nullable = false)
-	private Timestamp reservationTime;
+	private LocalDateTime reservationTime;
 	
 	@Column(nullable = false)
 	private int payment;
