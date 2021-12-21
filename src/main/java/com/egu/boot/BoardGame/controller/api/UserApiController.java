@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class UserApiController {
 	private ResponseService responseService;
 	
 	@PostMapping("/auth/signup")
-	public CommonResult save(@RequestBody User requestUser) {
+	public CommonResult signup(@RequestBody User requestUser) {
 		User user = userService.회원가입(requestUser);
 		return responseService.getSingleResult(user);
 	}
