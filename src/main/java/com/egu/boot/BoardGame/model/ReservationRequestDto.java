@@ -12,10 +12,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationRequestDto {
-
+	
 	private int userId;
 	private int slotId;
 	private int persons;
-	private LocalDateTime reservationTime;
 	private int payment;
+	
+	//비회원 예약 요청시 필요한 컬럼
+	private String name;
+	//private String password; 예약확인용 비밀번호
+	private String phoneNumber;
+	
 }
