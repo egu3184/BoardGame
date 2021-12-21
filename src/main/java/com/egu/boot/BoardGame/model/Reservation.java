@@ -41,6 +41,8 @@ public class Reservation {
 	@Column(nullable = false)
 	private boolean isPaid;
 	
-	
+	@OneToOne
+	@JoinColumn(name="slotId")
+	private Slot slot;
 	
 }

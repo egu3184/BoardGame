@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -38,5 +39,8 @@ public class Slot {
 	
 	@Column(nullable = false)
 	private boolean isReserved;
+	
+	@OneToOne(mappedBy = "slot")
+	private Reservation reservation;
 	
 }
