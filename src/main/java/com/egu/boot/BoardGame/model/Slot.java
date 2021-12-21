@@ -31,7 +31,6 @@ public class Slot {
 	private Theme theme;
 	
 	@Column(nullable = false)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime slotDateTime;
 
 	@Column(nullable = false)

@@ -1,5 +1,6 @@
 package com.egu.boot.BoardGame.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,5 +13,7 @@ public interface SlotRepository extends JpaRepository<Slot, Integer> {
 
 	
 	Page<Slot> findAllByIsOpenedAndIsReserved(boolean opened, boolean reserved, Pageable pageable);
+	
+	Page<Slot> findAllBySlotDateTimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 	
 }

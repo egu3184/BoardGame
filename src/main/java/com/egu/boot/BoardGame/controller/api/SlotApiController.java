@@ -1,10 +1,14 @@
 package com.egu.boot.BoardGame.controller.api;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +26,7 @@ import com.egu.boot.BoardGame.model.api.ListResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
 import com.egu.boot.BoardGame.service.SlotService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @RestController
 public class SlotApiController {
@@ -35,9 +40,9 @@ public class SlotApiController {
 	//슬롯 등록
 	@PostMapping("/slots")
 	public CommonResult saveSlot(@RequestBody SlotSaveRequestDto slotDto) {
-		slotService.슬롯등록(slotDto);
+		slotService.슬롯등록(slotDto); 
 		return responseService.getSuccessResult();
-	}
+	} 
 	
 	//슬롯 수정 
 	@PutMapping("/slots/{id}")
@@ -53,15 +58,38 @@ public class SlotApiController {
 		return responseService.getSuccessResult();
 	}
 	
+	//슬롯 검색 조회
+	@GetMapping(value="/slots/{id}", params="startDateTime")
+	public ListResult<Slot> findSlot(@PathVariable int id,
+			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam("startDateTime") LocalDateTime startDateTime,
+			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+			@RequestParam("endDateTime") LocalDateTime endDateTime,
+			@PageableDefault(direction = Direction.DESC, sort = "id") Pageable pageable
+			){
+		Page<Slot> list= slotService.슬롯검색(id,startDateTime, endDateTime, pageable);
+		return responseService.getPageListResult(list);
+	}
+	
+	//슬롯 조회
 	@GetMapping("/slots/{id}")
 	public SingleResult<Slot> findSlot(@PathVariable int id){
 		Slot slot = slotService.슬롯조회(id);
 		return responseService.getSingleResult(slot);
 	}
 	
+	//슬롯 전체 조회
+	//추후 권한 설정 필요
 	@GetMapping("/slots")
-	public ListResult<Slot> findAllSlot(Pageable pageable){
-		Page<Slot> list = slotService.슬롯리스트조회(pageable);
+	public ListResult<Slot> findAllSlot(Pageable pageable
+			//, @Authentication PrincipalDetail principal
+			){
+		//	if(pricipal.getRole.equals("ROLE_ADMIN"){
+		//		Page<Slot> list = slotService.슬롯전체조회(pageable);
+		// }else{
+		//		Page<Slot> list = slotService.예약가능슬롯조회(pageable);
+		//}
+		Page<Slot> list = slotService.모든슬롯조회(pageable);
 		return responseService.getPageListResult(list);
 	}
 	
