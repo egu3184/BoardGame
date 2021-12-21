@@ -21,13 +21,13 @@ public class ReservationApiController {
 	@Autowired
 	reservationService reservationService;
 	
-	//회원이 예약 등록
-	@PostMapping("/reservation")
+	//회원, 비회원 예약
+	@PostMapping("/reservation/member")
 	public CommonResult saveReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
 		Reservation reservation =  reservationService.예약등록(reservationRequestDto);
 		return responseService.getSingleResult(reservation);
 	}
 	
-	//비회원이 예약 등록
+	
 	
 }
