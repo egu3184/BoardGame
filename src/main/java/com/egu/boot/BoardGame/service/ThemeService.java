@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.egu.boot.BoardGame.handler.CustomThemeNotFoundException;
 import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.repository.ThemeRepository;
 
@@ -26,7 +27,8 @@ public class ThemeService {
 	@Transactional
 	public void 테마수정(int id, Theme requestTheme) {
 		Theme theme =  themeRepository.findById(id).orElseThrow(()->{
-			return new IllegalArgumentException("등록된 테마가 아닙니다.");
+			//throw new IllegalArgumentException("등록된 테마가 아닙니다.");
+			throw new CustomThemeNotFoundException();
 		});
 		theme.setThemeName(requestTheme.getThemeName());
 		theme.setDescription(requestTheme.getDescription());

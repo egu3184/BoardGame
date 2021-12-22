@@ -44,6 +44,13 @@ public class ExceptionAdvice {
         // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
         return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")), getMessage("userNotFound.msg"));
     }
+    
+    @ExceptionHandler(CustomThemeNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult themeNotFoundException(HttpServletRequest request, CustomThemeNotFoundException e) {
+        // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
+        return responseService.getFailResult(Integer.valueOf(getMessage("themeNotFound.code")), getMessage("themeNotFound.msg"));
+    }
 
     // code정보에 해당하는 메시지를 조회합니다.
     private String getMessage(String code) {
