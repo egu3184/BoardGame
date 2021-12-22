@@ -44,7 +44,7 @@ public class Theme {
 	private String Genre;
 	
 	@OneToMany(mappedBy = "theme")
-	@JsonIgnoreProperties({"theme"})	//무한 참조 방지
+	@JsonIgnoreProperties({"reservation"})
 	private List<Slot> slots;
 	
 	

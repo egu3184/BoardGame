@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 
@@ -29,6 +30,7 @@ public class Slot {
 
 	@ManyToOne
 	@JoinColumn(name="themeId")
+	@JsonIgnoreProperties({"slots"})
 	private Theme theme;
 	
 	@Column(nullable = false)
@@ -41,6 +43,7 @@ public class Slot {
 	private boolean isReserved;
 	
 	@OneToOne(mappedBy = "slot")
+	@JsonIgnoreProperties({"slots"})
 	private Reservation reservation;
 	
 }
