@@ -53,7 +53,7 @@ public class Reservation {
 	private Slot slot;
 	
 	@Column(nullable = false)
-	private String guestName;
+	private String bookerName;
 	
 	@Column(nullable = false)
 	private String phoneNumber;
