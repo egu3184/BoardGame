@@ -19,7 +19,7 @@ public class ReservationRequestDto {
 	private int payment;
 	
 	//비회원 예약 요청시 필요한 컬럼
-	private String guestName;
+	private String bookerName;
 	//private String password; 예약확인용 비밀번호
 	private String phoneNumber;
 	
