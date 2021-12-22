@@ -39,14 +39,14 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(CustomUserNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     protected CommonResult userNotFoundException(HttpServletRequest request, CustomUserNotFoundException e) {
         // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
         return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")), getMessage("userNotFound.msg"));
     }
     
     @ExceptionHandler(CustomThemeNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     protected CommonResult themeNotFoundException(HttpServletRequest request, CustomThemeNotFoundException e) {
         // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
         return responseService.getFailResult(Integer.valueOf(getMessage("themeNotFound.code")), getMessage("themeNotFound.msg"));
