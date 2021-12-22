@@ -57,6 +57,8 @@ public class Reservation {
 	
 	@Column(nullable = false)
 	private String phoneNumber;
-	
+
+	@Column(nullable = false)
+	private String email;
 	
 }

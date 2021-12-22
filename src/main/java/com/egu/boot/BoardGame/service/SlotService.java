@@ -10,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.egu.boot.BoardGame.model.Slot;
-import com.egu.boot.BoardGame.model.SlotSaveRequestDto;
 import com.egu.boot.BoardGame.model.Theme;
+import com.egu.boot.BoardGame.model.dto.SlotSaveRequestDto;
 import com.egu.boot.BoardGame.repository.SlotRepository;
 import com.egu.boot.BoardGame.repository.ThemeRepository;
 

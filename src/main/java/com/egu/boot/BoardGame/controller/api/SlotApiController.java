@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.model.Slot;
-import com.egu.boot.BoardGame.model.SlotSaveRequestDto;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.ListResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
+import com.egu.boot.BoardGame.model.dto.SlotSaveRequestDto;
 import com.egu.boot.BoardGame.service.SlotService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 import com.fasterxml.jackson.annotation.JsonFormat;

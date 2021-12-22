@@ -6,4 +6,6 @@ import com.egu.boot.BoardGame.model.Reservation;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
+	Reservation findByBookerNameAndPhoneNumberAndEmail(String bookername, String phoneNumber, String email);
+	
 }
