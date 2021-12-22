@@ -42,10 +42,11 @@ public class ResponseService {
 	}
 
 	// 실패 결과를 리턴하는 메소드
-	public CommonResult getFailResult(CommonResult result) {
+	public CommonResult getFailResult(int code, String msg) {
+		CommonResult result = new CommonResult();
 		result.setSuccess(false);
-		result.setCode(ResponseEnum.FAIL.getCode());
-		result.setMassage(ResponseEnum.FAIL.getMsg());
+		result.setCode(code);
+		result.setMassage(msg);
 		return result;
 	}
 

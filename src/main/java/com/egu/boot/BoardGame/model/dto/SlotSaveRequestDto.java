@@ -1,4 +1,4 @@
-package com.egu.boot.BoardGame.model;
+package com.egu.boot.BoardGame.model.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

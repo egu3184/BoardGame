@@ -1,4 +1,4 @@
-package com.egu.boot.BoardGame.model;
+package com.egu.boot.BoardGame.model.dto;
 
 import java.time.LocalDateTime;
 
@@ -22,5 +22,10 @@ public class ReservationRequestDto {
 	private String bookerName;
 	//private String password; 예약확인용 비밀번호
 	private String phoneNumber;
+	private String email;
+	
+	//예약 찾기에 필요한 컬럼
+	private Integer reservationId;
+	
 	
 }
