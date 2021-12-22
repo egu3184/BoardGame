@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -43,7 +44,10 @@ public class Slot {
 	private boolean isReserved;
 	
 	@OneToOne(mappedBy = "slot")
-	@JsonIgnoreProperties({"slots"})
+	@JsonIgnoreProperties({"slot"})
 	private Reservation reservation;
+	
+	@Version
+	private int version;
 	
 }
