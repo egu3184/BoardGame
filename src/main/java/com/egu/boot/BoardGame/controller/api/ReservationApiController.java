@@ -22,11 +22,14 @@ public class ReservationApiController {
 	reservationService reservationService;
 	
 	//회원, 비회원 예약
-	@PostMapping("/reservation/member")
+	@PostMapping("/reservation")
 	public CommonResult saveReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
 		Reservation reservation =  reservationService.예약등록(reservationRequestDto);
 		return responseService.getSingleResult(reservation);
 	}
+	
+	//예약 조회
+	
 	
 	
 	
