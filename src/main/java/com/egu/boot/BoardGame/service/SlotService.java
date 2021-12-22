@@ -70,7 +70,7 @@ public class SlotService {
 	
 	//슬롯 검색
 	@Transactional
-	public Page<Slot> 슬롯검색(int id, LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
+	public Page<Slot> 슬롯검색(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
 		System.out.println("슬롯 검색 호출됨");
 		return slotRepository.findAllBySlotDateTimeBetween(startDateTime, endDateTime, pageable);
 	}
