@@ -34,22 +34,31 @@ public class ExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult defaultException(HttpServletRequest request, Exception e) {
-        // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
         return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")), getMessage("unKnown.msg"));
     }
 
     @ExceptionHandler(CustomUserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected CommonResult userNotFoundException(HttpServletRequest request, CustomUserNotFoundException e) {
-        // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
         return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")), getMessage("userNotFound.msg"));
     }
     
     @ExceptionHandler(CustomThemeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     protected CommonResult themeNotFoundException(HttpServletRequest request, CustomThemeNotFoundException e) {
-        // 예외 처리의 메시지를 MessageSource에서 가져오도록 수정
         return responseService.getFailResult(Integer.valueOf(getMessage("themeNotFound.code")), getMessage("themeNotFound.msg"));
+    }
+    
+    @ExceptionHandler(CustomSlotNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected CommonResult slotNotFoundException(HttpServletRequest request, CustomSlotNotFoundException e) {
+        return responseService.getFailResult(Integer.valueOf(getMessage("slotNotFound.code")), getMessage("slotNotFound.msg"));
+    }
+    
+    @ExceptionHandler(CustomReservationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected CommonResult reservationNotFoundException(HttpServletRequest request, CustomReservationNotFoundException e) {
+        return responseService.getFailResult(Integer.valueOf(getMessage("reservationNotFound.code")), getMessage("reservationNotFound.msg"));
     }
 
     // code정보에 해당하는 메시지를 조회합니다.
