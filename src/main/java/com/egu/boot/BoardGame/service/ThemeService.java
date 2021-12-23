@@ -42,7 +42,7 @@ public class ThemeService {
 	@Transactional
 	public void 테마삭제(int id) {
 		themeRepository.findById(id).orElseThrow(()->{
-			return new IllegalArgumentException("등록된 테마가 아닙니다.");
+			throw new CustomThemeNotFoundException();
 		});
 		themeRepository.deleteById(id);
 	}

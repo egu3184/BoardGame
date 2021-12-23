@@ -38,9 +38,9 @@ public class UserService {
 
 	@Transactional
 	public User 회원찾기(int id) {
-		return userRepository.findById(id).orElseGet(null);
-		//return userRepository.findById(id)
-		//		.orElseThrow(CustomUserNotFoundException::new);
+		//return userRepository.findById(id).orElseGet(null);
+		return userRepository.findById(id)
+				.orElseThrow(CustomUserNotFoundException::new);
 	}
 
 	@Transactional

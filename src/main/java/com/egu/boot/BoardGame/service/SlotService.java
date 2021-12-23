@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.egu.boot.BoardGame.handler.CustomSlotNotFoundException;
+import com.egu.boot.BoardGame.handler.CustomThemeNotFoundException;
 import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.model.dto.SlotSaveRequestDto;
@@ -29,7 +31,7 @@ public class SlotService {
 	@Transactional
 	public void 슬롯등록(SlotSaveRequestDto slotDto) {
 		Theme theme = themeRepository.findById(slotDto.getThemeId()).orElseThrow(()->{
-			return new IllegalArgumentException("등록된 테마가 아닙니다.");
+			throw new CustomThemeNotFoundException();
 		});
 		Slot slot = new Slot();
 		slot.setTheme(theme);
@@ -44,7 +46,7 @@ public class SlotService {
 	public void 슬롯수정(Slot requestSlot, int id) {
 		
 		Slot slot = slotRepository.findById(id).orElseThrow(()->{
-			return new IllegalArgumentException("등록된 슬롯이 아닙니다.");
+			throw new CustomSlotNotFoundException();
 		});
 		slot.setTheme(requestSlot.getTheme());
 		slot.setOpened(requestSlot.isOpened());
@@ -57,7 +59,7 @@ public class SlotService {
 	@Transactional
 	public void 슬롯삭제(int id) {
 		slotRepository.findById(id).orElseThrow(()->{
-			return new IllegalArgumentException("등록된 슬롯이 아닙니다.");
+			throw new CustomSlotNotFoundException();
 		});
 		slotRepository.deleteById(id);
 	}
@@ -71,7 +73,6 @@ public class SlotService {
 	//슬롯 검색
 	@Transactional
 	public Page<Slot> 슬롯검색(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
-		System.out.println("슬롯 검색 호출됨");
 		return slotRepository.findAllBySlotDateTimeBetween(startDateTime, endDateTime, pageable);
 	}
 
