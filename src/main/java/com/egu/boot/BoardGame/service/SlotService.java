@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
 
+import com.egu.boot.BoardGame.handler.CustomException;
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.egu.boot.BoardGame.handler.CustomSlotNotFoundException;
-import com.egu.boot.BoardGame.handler.CustomThemeNotFoundException;
 import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.model.dto.SlotSaveRequestDto;
@@ -31,7 +31,7 @@ public class SlotService {
 	@Transactional
 	public void 슬롯등록(SlotSaveRequestDto slotDto) {
 		Theme theme = themeRepository.findById(slotDto.getThemeId()).orElseThrow(()->{
-			throw new CustomThemeNotFoundException();
+			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
 		Slot slot = new Slot();
 		slot.setTheme(theme);
@@ -46,7 +46,7 @@ public class SlotService {
 	public void 슬롯수정(Slot requestSlot, int id) {
 		
 		Slot slot = slotRepository.findById(id).orElseThrow(()->{
-			throw new CustomSlotNotFoundException();
+			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
 		slot.setTheme(requestSlot.getTheme());
 		slot.setOpened(requestSlot.isOpened());
@@ -59,7 +59,7 @@ public class SlotService {
 	@Transactional
 	public void 슬롯삭제(int id) {
 		slotRepository.findById(id).orElseThrow(()->{
-			throw new CustomSlotNotFoundException();
+			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
 		slotRepository.deleteById(id);
 	}

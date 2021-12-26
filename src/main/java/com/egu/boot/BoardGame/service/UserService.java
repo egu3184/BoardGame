@@ -4,13 +4,14 @@ import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
 
+import com.egu.boot.BoardGame.handler.CustomException;
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.egu.boot.BoardGame.handler.CustomUserNotFoundException;
 import com.egu.boot.BoardGame.model.RoleType;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.repository.UserRepository;
@@ -40,7 +41,7 @@ public class UserService {
 	public User 회원찾기(int id) {
 		//return userRepository.findById(id).orElseGet(null);
 		return userRepository.findById(id)
-				.orElseThrow(CustomUserNotFoundException::new);
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	@Transactional
