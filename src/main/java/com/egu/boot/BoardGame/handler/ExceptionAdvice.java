@@ -61,6 +61,13 @@ public class ExceptionAdvice {
         return responseService.getFailResult(Integer.valueOf(getMessage("reservationNotFound.code")), getMessage("reservationNotFound.msg"));
     }
 
+    @ExceptionHandler(CustomException.class)
+    protected ResponseEntity<CommonResult> handleException(CustomException e) {
+        return new ResponseEntity<>(
+                responseService.getFailResult(Integer.valueOf(getMessage(e.getErrorCode().getException() + ".code")), getMessage(e.getErrorCode().getException() + ".msg")),
+                e.getErrorCode().getStatus());
+    }
+
     // code정보에 해당하는 메시지를 조회합니다.
     private String getMessage(String code) {
         return getMessage(code, null);
