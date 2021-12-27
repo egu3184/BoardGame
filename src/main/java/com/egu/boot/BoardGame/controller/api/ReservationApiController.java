@@ -17,14 +17,14 @@ import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.service.ReservationService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class ReservationApiController {
 
-	@Autowired
-	ResponseService responseService;
-
-	@Autowired
-	ReservationService ReservationService;
+	private final ResponseService responseService;
+	private final ReservationService ReservationService;
 
 	// 회원, 비회원 예약
 	@PostMapping("/reservations")

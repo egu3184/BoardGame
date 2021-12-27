@@ -20,14 +20,14 @@ import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.service.ThemeService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class ThemeApiController {
 
-	@Autowired
-	private ThemeService themeService;
-	
-	@Autowired
-	ResponseService responseService;
+	private final ThemeService themeService;
+	private final ResponseService responseService;
 	
 	//테마 등록
 	@PostMapping("/themes")

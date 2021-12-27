@@ -18,14 +18,14 @@ import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.service.UserService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class UserApiController {
 
-	@Autowired
-	private UserService userService;
-	
-	@Autowired
-	private ResponseService responseService;
+	private final UserService userService;
+	private final ResponseService responseService;
 	
 	@PostMapping("/auth/signup")
 	public CommonResult signup(@RequestBody User requestUser) {

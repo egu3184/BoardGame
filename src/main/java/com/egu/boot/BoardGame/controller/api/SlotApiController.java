@@ -28,14 +28,14 @@ import com.egu.boot.BoardGame.service.SlotService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class SlotApiController {
-
-	@Autowired
-	SlotService slotService;
-
-	@Autowired
-	ResponseService responseService;
+	
+	private final SlotService slotService;
+	private final ResponseService responseService;
 	
 	//슬롯 등록
 	@PostMapping("/slots")
