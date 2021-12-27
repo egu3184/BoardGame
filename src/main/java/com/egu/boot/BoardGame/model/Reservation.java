@@ -48,7 +48,7 @@ public class Reservation {
 	@Column(nullable = false)
 	private boolean isPaid;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="slotId")
 	private Slot slot;
 	

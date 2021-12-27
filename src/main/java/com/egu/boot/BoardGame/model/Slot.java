@@ -43,7 +43,7 @@ public class Slot {
 	@Column(nullable = false)
 	private boolean isReserved;
 	
-	@OneToOne(mappedBy = "slot")
+	@OneToOne(mappedBy = "slot", fetch = FetchType.EAGER)
 	@JsonIgnoreProperties({"slot"})
 	private Reservation reservation;
 	

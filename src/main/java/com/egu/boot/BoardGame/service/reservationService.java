@@ -1,6 +1,7 @@
 package com.egu.boot.BoardGame.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -14,21 +15,22 @@ import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.dto.ReservationRequestDto;
+import com.egu.boot.BoardGame.repository.FindReservationRepository;
 import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.repository.SlotRepository;
 import com.egu.boot.BoardGame.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
 
-	@Autowired
-	ReservationRepository reservationRepository;
 
-	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
-	SlotRepository slotRepository;
+	private final ReservationRepository reservationRepository;
+	private final UserRepository userRepository;
+	private final SlotRepository slotRepository;
+	private final FindReservationRepository findReservationRepository;
 
 	@Transactional
 	public Reservation 예약등록(ReservationRequestDto reservationRequestDto) {
@@ -60,22 +62,18 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public Reservation 예약조회(ReservationRequestDto reservationRequestDto) {
-		Reservation reservation  = null;
-		
-		if(reservationRequestDto.getReservationId() != null) {
-			reservation = reservationRepository.findById(reservationRequestDto.getReservationId()).orElseThrow(()->{
+	public Reservation 예약조회(int id) {
+		Reservation reservation = reservationRepository.findById(id).orElseThrow(()->{
 				throw new CustomReservationNotFoundException();
 			});
-		}else {
-			 reservation = reservationRepository.findByBookerNameAndPhoneNumberAndEmail(
-					reservationRequestDto.getBookerName(), 
-					reservationRequestDto.getPhoneNumber(), 
-					reservationRequestDto.getEmail());	
-		}
 		return reservation;
 	}
 
+	@Transactional
+	public List<Reservation> 예약검색조회(String bookerName, String phoneNumber) {
+		List<Reservation> list =  findReservationRepository.searchReservation(bookerName, phoneNumber);
+		return list;
+	}
 	
 	
 	

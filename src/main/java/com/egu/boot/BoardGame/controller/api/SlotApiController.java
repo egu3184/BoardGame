@@ -62,7 +62,7 @@ public class SlotApiController {
 	@GetMapping(value="/slots", params="startDateTime")
 	public ListResult<Slot> findSlot(
 			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-			@RequestParam("startDateTime") LocalDateTime startDateTime,
+			@RequestParam(value = "startDateTime") LocalDateTime startDateTime,
 			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
 			@RequestParam("endDateTime") LocalDateTime endDateTime,
 			@PageableDefault(direction = Direction.DESC, sort = "id") Pageable pageable
