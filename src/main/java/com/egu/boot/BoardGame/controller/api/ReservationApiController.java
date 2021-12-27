@@ -33,7 +33,7 @@ public class ReservationApiController {
 		return responseService.getSingleResult(reservation);
 	}
 
-	// 예약 조회
+	// id로 예약 조회
 	@GetMapping("/reservations/{id}")
 	public CommonResult findReservation(@PathVariable int id) {
 		Reservation reservation = ReservationService.예약조회(id);
@@ -44,8 +44,9 @@ public class ReservationApiController {
 	@GetMapping("/reservations")
 	public CommonResult findReservation(
 			@RequestParam(value = "bookerName", required = false) String bookerName,
-			@RequestParam(value = "phoneNumber", required = false) String phoneNumber) {
-		List<Reservation> reservation = ReservationService.예약검색조회(bookerName, phoneNumber);
+			@RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+			@RequestParam(value="id", required = false) Integer id) {
+		List<Reservation> reservation = ReservationService.예약검색조회(bookerName, phoneNumber,id);
 		return responseService.getListResult(reservation);
 	}
 

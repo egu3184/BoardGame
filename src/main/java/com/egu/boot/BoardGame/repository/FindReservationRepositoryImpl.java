@@ -15,12 +15,13 @@ public class FindReservationRepositoryImpl implements FindReservationRepository 
 	private final JPAQueryFactory queryFactory;
 	
 	@Override
-	public List<Reservation> searchReservation(String bookerName, String phoneNumber) {
+	public List<Reservation> searchReservation(String bookerName, String phoneNumber, Integer id) {
 	
 		return queryFactory
 				.selectFrom(reservation)
 				.where(eqBookerName(bookerName),
-							eqPhoneNumber(phoneNumber))
+							eqPhoneNumber(phoneNumber),
+							eqId(id))
 				.fetch();
 	}
 	
@@ -32,6 +33,11 @@ public class FindReservationRepositoryImpl implements FindReservationRepository 
 	private BooleanExpression eqPhoneNumber(String phoneNumber) {
 		if(phoneNumber == null) return null;
 		return reservation.phoneNumber.eq(phoneNumber);
+	}
+	
+	private BooleanExpression eqId(Integer id) {
+		if(id== null) return null;
+		return reservation.id.eq(id);
 	}
 
 }

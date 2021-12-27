@@ -9,6 +9,6 @@ public interface FindReservationRepository {
 
 	QReservation reservation = QReservation.reservation;
 	
-	List<Reservation> searchReservation(String bookName, String phoneNumber);
+	List<Reservation> searchReservation(String bookName, String phoneNumber, Integer id);
 
 }

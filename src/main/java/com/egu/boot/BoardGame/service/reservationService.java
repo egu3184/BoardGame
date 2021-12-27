@@ -70,8 +70,8 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public List<Reservation> 예약검색조회(String bookerName, String phoneNumber) {
-		List<Reservation> list =  findReservationRepository.searchReservation(bookerName, phoneNumber);
+	public List<Reservation> 예약검색조회(String bookerName, String phoneNumber, Integer id) {
+		List<Reservation> list =  findReservationRepository.searchReservation(bookerName, phoneNumber, id);
 		return list;
 	}
 	
