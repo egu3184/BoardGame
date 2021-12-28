@@ -41,7 +41,7 @@ public class Theme {
 	
 	private String difficulty;
 	
-	private String Genre;
+	private String genre;
 	
 	@OneToMany(mappedBy = "theme")
 	@JsonIgnoreProperties({"reservation"})
