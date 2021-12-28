@@ -10,7 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.egu.boot.BoardGame.handler.CustomUserNotFoundException;
+import com.egu.boot.BoardGame.handler.CustomException;
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.RoleType;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.repository.UserRepository;
@@ -40,7 +41,9 @@ public class UserService {
 	public User 회원찾기(int id) {
 		//return userRepository.findById(id).orElseGet(null);
 		return userRepository.findById(id)
-				.orElseThrow(CustomUserNotFoundException::new);
+				.orElseThrow(()->{
+					throw new CustomException(ErrorCode.THEME_NOT_FOUND);
+				});
 	}
 
 	@Transactional

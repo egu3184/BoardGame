@@ -37,30 +37,6 @@ public class ExceptionAdvice {
         return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")), getMessage("unKnown.msg"));
     }
 
-    @ExceptionHandler(CustomUserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected CommonResult userNotFoundException(HttpServletRequest request, CustomUserNotFoundException e) {
-        return responseService.getFailResult(Integer.valueOf(getMessage("userNotFound.code")), getMessage("userNotFound.msg"));
-    }
-    
-    @ExceptionHandler(CustomThemeNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected CommonResult themeNotFoundException(HttpServletRequest request, CustomThemeNotFoundException e) {
-        return responseService.getFailResult(Integer.valueOf(getMessage("themeNotFound.code")), getMessage("themeNotFound.msg"));
-    }
-    
-    @ExceptionHandler(CustomSlotNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected CommonResult slotNotFoundException(HttpServletRequest request, CustomSlotNotFoundException e) {
-        return responseService.getFailResult(Integer.valueOf(getMessage("slotNotFound.code")), getMessage("slotNotFound.msg"));
-    }
-    
-    @ExceptionHandler(CustomReservationNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected CommonResult reservationNotFoundException(HttpServletRequest request, CustomReservationNotFoundException e) {
-        return responseService.getFailResult(Integer.valueOf(getMessage("reservationNotFound.code")), getMessage("reservationNotFound.msg"));
-    }
-
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<CommonResult> handleException(CustomException e) {
         return new ResponseEntity<>(

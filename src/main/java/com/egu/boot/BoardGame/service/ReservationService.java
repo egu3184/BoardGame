@@ -8,9 +8,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.egu.boot.BoardGame.handler.CustomReservationNotFoundException;
-import com.egu.boot.BoardGame.handler.CustomSlotNotFoundException;
-import com.egu.boot.BoardGame.handler.CustomUserNotFoundException;
+import com.egu.boot.BoardGame.handler.CustomException;
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.User;
@@ -37,11 +36,11 @@ public class ReservationService {
 		User user = null;
 		if(reservationRequestDto.getUserId() != null) {
 			 user = userRepository.findById(reservationRequestDto.getUserId()).orElseThrow(() -> {
-					throw new CustomUserNotFoundException();
+					throw new CustomException(ErrorCode.USER_NOT_FOUND);
 			 });
 		}
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
-			throw new CustomSlotNotFoundException();
+			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
 		if (slot.isReserved() == true) {
 			throw new IllegalArgumentException("이미 예약된 슬롯입니다.");
@@ -64,7 +63,7 @@ public class ReservationService {
 	@Transactional
 	public Reservation 예약조회(int id) {
 		Reservation reservation = reservationRepository.findById(id).orElseThrow(()->{
-				throw new CustomReservationNotFoundException();
+				throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
 			});
 		return reservation;
 	}
