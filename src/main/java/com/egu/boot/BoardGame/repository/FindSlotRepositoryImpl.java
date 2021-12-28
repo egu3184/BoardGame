@@ -25,9 +25,9 @@ public class FindSlotRepositoryImpl implements FindSlotRepository {
 				.selectFrom(slot)
 				.where(
 						eqId(id),
-						btSlotTime(startTime, endTime)
-						//,eqOpened(isOpened),
-						//eqReserved(isReserved)
+						btSlotTime(startTime, endTime),
+						eqOpened(isOpened),
+						eqReserved(isReserved)
 						).fetch();
 	}
 	
@@ -43,7 +43,7 @@ public class FindSlotRepositoryImpl implements FindSlotRepository {
 		return slot.id.eq(id);
 	}
 	
-	/*
+
 	private BooleanExpression eqOpened(Boolean isOpened) {
 		if(isOpened == null) return null;
 		return slot.isOpened.eq(isOpened);
@@ -53,5 +53,5 @@ public class FindSlotRepositoryImpl implements FindSlotRepository {
 		if(isReserved== null) return null;
 		return slot.isReserved.eq(isReserved);
 	}
-	*/
+
 }

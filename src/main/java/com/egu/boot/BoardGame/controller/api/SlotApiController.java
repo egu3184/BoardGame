@@ -70,9 +70,10 @@ public class SlotApiController {
 			@RequestParam(value = "endDateTime",  required = false) LocalDateTime endDateTime,
 			@RequestParam(value="id", required = false) Integer id, 
 			@RequestParam(value="isOpened", required=false) Boolean isOpened,
-			@RequestParam(value="isOpened", required=false) Boolean isReserved
-			){
-
+			@RequestParam(value="isReserved", required=false) Boolean isReserved
+			){ 
+		System.out.println("isOpened = "+isOpened);
+		System.out.println("isReserved = "+isReserved);
 		List<Slot> list=  findSlotRepository.searchSlot(id, startDateTime, endDateTime, isOpened, isReserved);
 		return responseService.getListResult(list);
 	}
