@@ -28,13 +28,13 @@ public class ExceptionAdvice {
 	@Autowired
     ResponseService responseService;
 
-	/*
+	
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult defaultException(HttpServletRequest request, Exception e) {
-        return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")), getMessage("unKnown.msg"));
+        return responseService.getFailResult(ErrorCode.UNKNOWN.getCode(), ErrorCode.UNKNOWN.getException());
     }
-	*/
+	
 	
     @ExceptionHandler(CustomException.class)
     protected CommonResult handleException(CustomException e) {

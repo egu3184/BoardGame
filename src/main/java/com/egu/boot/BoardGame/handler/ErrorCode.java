@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-	UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR,"unKnown",500),
+	UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "unKnown", 500),
 
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user_Not_Found", 404),
 	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "theme_Not_Found",404),
