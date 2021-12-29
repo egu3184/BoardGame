@@ -32,13 +32,13 @@ public class ExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult defaultException(HttpServletRequest request, Exception e) {
-        return responseService.getFailResult(ErrorCode.UNKNOWN.getCode(), ErrorCode.UNKNOWN.getException());
+        return responseService.getFailResult(ErrorCode.UNKNOWN.getCode(), ErrorCode.UNKNOWN.getMessage());
     }
 	
 	
     @ExceptionHandler(CustomException.class)
     protected CommonResult handleException(CustomException e) {
-        return responseService.getFailResult(e.getErrorCode().getCode(), e.getMessage());
+        return responseService.getFailResult(e.getErrorCode().getCode(), e.getErrorCode().getMessage());
     }
 
  
