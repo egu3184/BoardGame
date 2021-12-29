@@ -28,28 +28,18 @@ public class ExceptionAdvice {
 	@Autowired
     ResponseService responseService;
 
-	@Autowired
-    MessageSource messageSource;
-
+	/*
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult defaultException(HttpServletRequest request, Exception e) {
         return responseService.getFailResult(Integer.valueOf(getMessage("unKnown.code")), getMessage("unKnown.msg"));
     }
-
+	*/
+	
     @ExceptionHandler(CustomException.class)
-    protected ResponseEntity<CommonResult> handleException(CustomException e) {
-        return new ResponseEntity<>(
-                responseService.getFailResult(Integer.valueOf(getMessage(e.getErrorCode().getException() + ".code")), getMessage(e.getErrorCode().getException() + ".msg")),
-                e.getErrorCode().getStatus());
+    protected CommonResult handleException(CustomException e) {
+        return responseService.getFailResult(e.getErrorCode().getCode(), e.getMessage());
     }
 
-    // code정보에 해당하는 메시지를 조회합니다.
-    private String getMessage(String code) {
-        return getMessage(code, null);
-    }
-    // code정보, 추가 argument로 현재 locale에 맞는 메시지를 조회합니다.
-    private String getMessage(String code, Object[] args) {
-        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
-    }
+ 
 }
