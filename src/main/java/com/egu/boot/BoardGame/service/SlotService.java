@@ -67,25 +67,10 @@ public class SlotService {
 	//슬롯 조회
 	@Transactional
 	public Slot 슬롯조회(int id) {
-		return slotRepository.findById(id).orElseGet(null);
-	}
-	
-	//슬롯 검색
-	@Transactional
-	public Page<Slot> 슬롯검색(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable) {
-		return slotRepository.findAllBySlotDateTimeBetween(startDateTime, endDateTime, pageable);
+		Slot slot = slotRepository.findById(id).orElseThrow(()->{
+			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
+		});
+		return slot;
 	}
 
-	//예약 가능 슬롯 조회( opened & not reserved only )
-	@Transactional
-	public Page<Slot> 예약가능슬롯조회(Pageable pageable) {
-		return slotRepository.findAllByIsOpenedAndIsReserved(true, false, pageable);
-	}
-	
-	//슬롯 전체 조회
-	public Page<Slot> 모든슬롯조회(Pageable pageable) {
-		return slotRepository.findAll(pageable);
-	}
-	
-	
 }
