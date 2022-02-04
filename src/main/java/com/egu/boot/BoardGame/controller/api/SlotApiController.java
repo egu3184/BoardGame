@@ -35,7 +35,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="*", allowedHeaders = "*")
 public class SlotApiController {
 	
 	private final FindSlotRepository findSlotRepository;
