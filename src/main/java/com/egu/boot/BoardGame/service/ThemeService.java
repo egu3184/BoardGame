@@ -28,7 +28,6 @@ public class ThemeService {
 	@Transactional
 	public void 테마수정(int id, Theme requestTheme) {
 		Theme theme =  themeRepository.findById(id).orElseThrow(()->{
-			//throw new IllegalArgumentException("등록된 테마가 아닙니다.");
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
 		theme.setThemeName(requestTheme.getThemeName());
