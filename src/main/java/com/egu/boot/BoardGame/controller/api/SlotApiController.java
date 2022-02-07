@@ -1,6 +1,7 @@
 package com.egu.boot.BoardGame.controller.api;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,19 +64,33 @@ public class SlotApiController {
 	}
 	
 	//슬롯 검색 리스트 조회
-	@GetMapping(value="/slots")
+//	@GetMapping(value="/slots")
+//	public ListResult<Slot> findSlot(
+//			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//			@RequestParam(value = "startDateTime", required = false) LocalDateTime startDateTime,
+//			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+//			@RequestParam(value = "endDateTime",  required = false) LocalDateTime endDateTime,
+//			@RequestParam(value="id", required = false) Integer id, 
+//			@RequestParam(value="isOpened", required=false) Boolean isOpened,
+//			@RequestParam(value="isReserved", required=false) Boolean isReserved
+//			){ 
+//		System.out.println("isOpened = "+isOpened);
+//		System.out.println("isReserved = "+isReserved);
+//		List<Slot> list=  findSlotRepository.searchSlot(id, startDateTime, endDateTime, isOpened, isReserved);
+//		return responseService.getListResult(list);
+//	}
+	@GetMapping(value = "/slots")
 	public ListResult<Slot> findSlot(
-			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-			@RequestParam(value = "startDateTime", required = false) LocalDateTime startDateTime,
-			@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-			@RequestParam(value = "endDateTime",  required = false) LocalDateTime endDateTime,
-			@RequestParam(value="id", required = false) Integer id, 
-			@RequestParam(value="isOpened", required=false) Boolean isOpened,
-			@RequestParam(value="isReserved", required=false) Boolean isReserved
-			){ 
-		System.out.println("isOpened = "+isOpened);
-		System.out.println("isReserved = "+isReserved);
-		List<Slot> list=  findSlotRepository.searchSlot(id, startDateTime, endDateTime, isOpened, isReserved);
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			@RequestParam(value="slotDate") LocalDate slotDate, 
+			@RequestParam(value="branch") String branch,
+			@RequestParam(value="theme") String theme){
+		
+		System.out.println("slotDate ="+slotDate);
+		System.out.println("branch ="+branch);
+		System.out.println("theme ="+theme);
+		List<Slot> list =  slotService.슬롯현황조회(slotDate, branch, theme);
+		
 		return responseService.getListResult(list);
 	}
 	
@@ -85,6 +100,9 @@ public class SlotApiController {
 		Slot slot = slotService.슬롯조회(id);
 		return responseService.getSingleResult(slot);
 	}
+	
+	
+	
 	
 	//슬롯 전체 조회
 	//추후 권한 설정 필요
