@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
@@ -34,8 +33,12 @@ public class Slot {
 	@JsonIgnoreProperties({"slots"})
 	private Theme theme;
 	
-	@Column(nullable = false)
-	private LocalDateTime slotDateTime;
+   @Column(nullable = false)
+   private LocalDateTime slotDateTime;
+	
+	private LocalDate slotDate;
+	
+	private LocalTime slotTime;
 
 	@Column(nullable = false)
 	private boolean isOpened;
@@ -49,5 +52,9 @@ public class Slot {
 	
 	@Version
 	private int version;
+	
+	@OneToOne
+	@JoinColumn(name="branchId")
+	private Branch branch;
 	
 }

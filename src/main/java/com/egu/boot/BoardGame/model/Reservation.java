@@ -61,4 +61,8 @@ public class Reservation {
 	@Column(nullable = false)
 	private String email;
 	
+	//조인할 지점 컬럼 추가
+	@OneToOne
+	@JoinColumn(name = "branchId")
+	private Branch branch;
 }
