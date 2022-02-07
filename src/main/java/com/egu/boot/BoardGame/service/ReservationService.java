@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.egu.boot.BoardGame.handler.CustomException;
 import com.egu.boot.BoardGame.handler.ErrorCode;
+import com.egu.boot.BoardGame.model.Branch;
 import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.dto.ReservationRequestDto;
+import com.egu.boot.BoardGame.repository.BranchRepository;
 import com.egu.boot.BoardGame.repository.FindReservationRepository;
 import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.repository.SlotRepository;
@@ -30,6 +32,7 @@ public class ReservationService {
 	private final UserRepository userRepository;
 	private final SlotRepository slotRepository;
 	private final FindReservationRepository findReservationRepository;
+	private final BranchRepository branchRepository;
 
 	@Transactional
 	public Reservation 예약등록(ReservationRequestDto reservationRequestDto) {
@@ -42,6 +45,11 @@ public class ReservationService {
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
+		
+		Branch branch = branchRepository.findById(reservationRequestDto.getBranchId()).orElseThrow(()->{
+			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
+		});
+		
 		if (slot.isReserved() == true) {
 			throw new IllegalArgumentException("이미 예약된 슬롯입니다.");
 		} else {
@@ -54,7 +62,9 @@ public class ReservationService {
 					.bookerName(reservationRequestDto.getBookerName())
 					.phoneNumber(reservationRequestDto.getPhoneNumber())
 					.email(reservationRequestDto.getEmail())
-					.slot(slot).build();
+					.slot(slot)
+					.branch(branch).
+					build();
 			slot.setReserved(true); // 슬롯 예약됨으로 변경	
 			return reservationRepository.save(reservation);
 		}
