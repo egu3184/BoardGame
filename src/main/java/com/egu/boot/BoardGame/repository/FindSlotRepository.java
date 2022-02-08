@@ -1,5 +1,6 @@
 package com.egu.boot.BoardGame.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public interface FindSlotRepository {
 	QSlot slot = QSlot.slot;
 	
 	List<Slot> searchSlot(Integer id, 
-										LocalDateTime startTime, 
-										LocalDateTime endTime,
+										LocalDate startDate, 
+										LocalDate endDate,
 										Boolean isOpened,
 										Boolean isReserved
 										);

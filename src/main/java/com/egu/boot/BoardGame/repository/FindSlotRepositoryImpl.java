@@ -1,5 +1,6 @@
 package com.egu.boot.BoardGame.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class FindSlotRepositoryImpl implements FindSlotRepository {
 	
 	@Override
 	public List<Slot> searchSlot(Integer id, 
-													LocalDateTime startTime, LocalDateTime endTime,
+													LocalDate startTime, LocalDate endTime,
 													Boolean isOpened, Boolean isReserved) {
 		return queryFactory
 				.selectFrom(slot)
@@ -31,11 +32,11 @@ public class FindSlotRepositoryImpl implements FindSlotRepository {
 						).fetch();
 	}
 	
-	private BooleanExpression btSlotTime(LocalDateTime startTime, LocalDateTime endTime) {
+	private BooleanExpression btSlotTime(LocalDate startTime, LocalDate endTime) {
 		if(startTime == null && endTime == null) {
 			return null;
 		}
-		return slot.slotDateTime.between(startTime, endTime);
+		return slot.slotDate.between(startTime, endTime);
 	}
 	
 	private BooleanExpression eqId(Integer id) {
