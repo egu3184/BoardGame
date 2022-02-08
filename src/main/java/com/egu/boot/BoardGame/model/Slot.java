@@ -18,10 +18,16 @@ import javax.persistence.Version;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Slot {
 
 	@Id
@@ -33,15 +39,15 @@ public class Slot {
 	@JsonIgnoreProperties({"slots"})
 	private Theme theme;
 	
-   @Column(nullable = false)
-   private LocalDateTime slotDateTime;
-	
 	private LocalDate slotDate;
 	
 	private LocalTime slotTime;
 
 	@Column(nullable = false)
 	private boolean isOpened;
+	
+	@Column(nullable = false)
+	private boolean isShowed;
 	
 	@Column(nullable = false)
 	private boolean isReserved;
