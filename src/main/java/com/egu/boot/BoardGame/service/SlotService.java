@@ -38,14 +38,23 @@ public class SlotService {
 	//슬롯 등록
 	@Transactional
 	public void 슬롯등록(SlotSaveRequestDto slotDto) {
-		Theme theme = themeRepository.findById(slotDto.getThemeId()).orElseThrow(()->{
+		Theme theme = themeRepository.findByThemeName(slotDto.getThemeName()).orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Slot slot = new Slot();
-		slot.setTheme(theme);
-		slot.setSlotDateTime(slotDto.getSlotDateTime());
-		slot.setOpened(true);
-		slot.setReserved(false);
+		Branch branch = branchRepository.findAllBybranchName(slotDto.getBranchName()).orElseThrow(()->{
+			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
+		});
+		Slot slot = Slot.builder()
+							.branch(branch)
+							.isOpened(false)
+							.isReserved(false)
+							.isShowed(false)
+							.reservation(null)
+							.slotDate(slotDto.getSlotDate())
+							.slotTime(slotDto.getSlotTime())
+							.theme(theme)
+							.build();
+
 		slotRepository.save(slot);
 	}
 
@@ -58,8 +67,11 @@ public class SlotService {
 		});
 		slot.setTheme(requestSlot.getTheme());
 		slot.setOpened(requestSlot.isOpened());
+		slot.setBranch(requestSlot.getBranch());
+		slot.setShowed(requestSlot.isShowed());
 		slot.setReserved(requestSlot.isReserved());
-		slot.setSlotDateTime(requestSlot.getSlotDateTime());
+		slot.setSlotDate(requestSlot.getSlotDate());
+		slot.setSlotTime(requestSlot.getSlotTime());
 	
 	}
 
@@ -83,15 +95,12 @@ public class SlotService {
 	
 	//슬롯 검색
 	public List<Slot> 슬롯현황조회(LocalDate slotDate, String branchName, String themeName) {
-		System.out.println(branchName + themeName);
 		Theme theme = themeRepository.findByThemeName(themeName).orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		System.out.println("themeName =" +theme.getId());
 		Branch branch = branchRepository.findAllBybranchName(branchName).orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
-		System.out.println(branch.getId());
 		List<Slot> list = slotRepository.findAllBySlotDateAndBranchAndTheme(slotDate, branch, theme);
 
 		return list;

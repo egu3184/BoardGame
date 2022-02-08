@@ -2,6 +2,9 @@ package com.egu.boot.BoardGame.model.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
@@ -15,10 +18,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SlotSaveRequestDto {
 
-	int themeId;
+	String themeName;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-	LocalDateTime slotDateTime;
+	String branchName;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	LocalDate slotDate;
+	
+	@DateTimeFormat(pattern = "HH:mm:ss")
+	LocalTime slotTime;
+	
+	boolean isOpened;
+	
+	boolean isShowed;
+	
+	boolean isReserved;
+	
 
 	
 }
