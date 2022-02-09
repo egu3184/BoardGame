@@ -18,4 +18,6 @@ public interface FindSlotRepository {
 										Boolean isReserved
 										);
 	
+	
+	
 }

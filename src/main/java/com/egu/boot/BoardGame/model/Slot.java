@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,6 +30,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicUpdate
 public class Slot {
 
 	@Id
@@ -53,7 +56,7 @@ public class Slot {
 	private boolean isReserved;
 	
 	@OneToOne(mappedBy = "slot", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({"slot"})
+	@JsonIgnoreProperties({"slots"})
 	private Reservation reservation;
 	
 	@Version

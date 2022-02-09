@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.model.Slot;
@@ -49,9 +50,16 @@ public class SlotApiController {
 		return responseService.getSuccessResult();
 	} 
 	
+	//슬롯 모든 시간 일괄 등록 (편의상 임시 메서드)
+	@PostMapping("/slots/all")
+	public CommonResult saveAllSlot(@RequestBody SlotSaveRequestDto slotDto ) {
+		slotService.슬롯일괄등록(slotDto);
+		return responseService.getSuccessResult();
+	}
+	
 	//슬롯 수정 
 	@PutMapping("/slots/{id}")
-	public CommonResult editSlot(@PathVariable int id, @RequestBody Slot requestSlot) {
+	public CommonResult editSlot(@PathVariable int id, @RequestBody SlotSaveRequestDto requestSlot) {
 		slotService.슬롯수정(requestSlot,id);
 		return responseService.getSuccessResult();
 	}

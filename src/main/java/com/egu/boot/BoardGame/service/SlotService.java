@@ -2,6 +2,7 @@ package com.egu.boot.BoardGame.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.model.dto.SlotSaveRequestDto;
 import com.egu.boot.BoardGame.repository.BranchRepository;
+import com.egu.boot.BoardGame.repository.FindSlotRepository;
 import com.egu.boot.BoardGame.repository.SlotRepository;
 import com.egu.boot.BoardGame.repository.ThemeRepository;
 
@@ -60,18 +62,18 @@ public class SlotService {
 
 	//슬롯 수정
 	@Transactional
-	public void 슬롯수정(Slot requestSlot, int id) {
+	public void 슬롯수정(SlotSaveRequestDto requestSlot, int id) {
 		
 		Slot slot = slotRepository.findById(id).orElseThrow(()->{
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
-		});
-		slot.setTheme(requestSlot.getTheme());
+		}); 
+		//slot.setTheme(requestSlot.getTheme());
 		slot.setOpened(requestSlot.isOpened());
-		slot.setBranch(requestSlot.getBranch());
+		//slot.setBranch(requestSlot.getBranch());
 		slot.setShowed(requestSlot.isShowed());
 		slot.setReserved(requestSlot.isReserved());
-		slot.setSlotDate(requestSlot.getSlotDate());
-		slot.setSlotTime(requestSlot.getSlotTime());
+		//slot.setSlotDate(requestSlot.getSlotDate());
+		//slot.setSlotTime(requestSlot.getSlotTime());
 	
 	}
 
@@ -104,6 +106,26 @@ public class SlotService {
 		List<Slot> list = slotRepository.findAllBySlotDateAndBranchAndTheme(slotDate, branch, theme);
 
 		return list;
+	}
+
+	@Transactional
+	public void 슬롯일괄등록(SlotSaveRequestDto slotDto) {
+
+		String openTime = "09:00:00";
+		String endTime = "21:00:00";
+		
+		LocalTime slotOpenTime = LocalTime.parse(openTime);
+		LocalTime slotCloseTime = LocalTime.parse(endTime);
+		LocalTime slotTime = slotOpenTime;
+		
+		while(slotTime.isBefore(slotCloseTime)) {	//Open시간이 Close시간보다 이전이니?
+			slotDto.setSlotTime(slotTime);
+			슬롯등록(slotDto);
+			slotTime = slotTime.plusHours(2);		//두시간 추가	
+		}
+		
+		
+		
 	}
 
 }
