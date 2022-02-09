@@ -51,9 +51,9 @@ public class ThemeApiController {
 	}
 	
 	//테마 리스트 조회
-	@GetMapping("/theme")
+	@GetMapping("/themes")
 	public CommonResult findAllTheme(
-			@PageableDefault(sort = "id", direction = Direction.DESC) Pageable pageable) {
+			@PageableDefault(sort = "id", direction = Direction.ASC) Pageable pageable) {
 		Page<Theme> list =  themeService.테마리스트(pageable);
 		return responseService.getPageListResult(list);
 	}
