@@ -16,7 +16,8 @@ public class ResponseService {
 
 	@Getter
 	public enum ResponseEnum {
-		SUCCESS(0, "성공하였습니다."), FAIL(-1, "실패하였습니다.");
+		SUCCESS(0, "성공하였습니다."), 
+		FAIL(-1, "실패하였습니다.");
 
 		private int code;
 		private String msg;
