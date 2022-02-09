@@ -91,13 +91,13 @@ public class SlotApiController {
 	public ListResult<Slot> findSlot(
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(value="slotDate") LocalDate slotDate, 
-			@RequestParam(value="branch") String branch,
-			@RequestParam(value="theme") String theme){
+			@RequestParam(value="branchId") String branchId,
+			@RequestParam(value="themeId") String themeId){
 		
 		System.out.println("slotDate ="+slotDate);
-		System.out.println("branch ="+branch);
-		System.out.println("theme ="+theme);
-		List<Slot> list =  slotService.슬롯현황조회(slotDate, branch, theme);
+		System.out.println("branch ="+branchId);
+		System.out.println("theme ="+themeId);
+		List<Slot> list =  slotService.슬롯현황조회(slotDate, Integer.parseInt(branchId), Integer.parseInt(themeId));
 		
 		return responseService.getListResult(list);
 	}

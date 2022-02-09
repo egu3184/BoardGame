@@ -96,11 +96,11 @@ public class SlotService {
 	}
 	
 	//슬롯 검색
-	public List<Slot> 슬롯현황조회(LocalDate slotDate, String branchName, String themeName) {
-		Theme theme = themeRepository.findByThemeName(themeName).orElseThrow(()->{
+	public List<Slot> 슬롯현황조회(LocalDate slotDate, int branchId, int themeId) {
+		Theme theme = themeRepository.findById(themeId).orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Branch branch = branchRepository.findAllBybranchName(branchName).orElseThrow(()->{
+		Branch branch = branchRepository.findById(branchId).orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
 		List<Slot> list = slotRepository.findAllBySlotDateAndBranchAndTheme(slotDate, branch, theme);
