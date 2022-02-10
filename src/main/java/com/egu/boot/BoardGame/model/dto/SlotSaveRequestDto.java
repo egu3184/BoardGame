@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SlotSaveRequestDto {
 
-	String themeName;
+	int themeId;
 	
-	String branchName;
+	int branchId;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	LocalDate slotDate;

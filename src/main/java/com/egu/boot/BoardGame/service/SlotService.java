@@ -40,10 +40,10 @@ public class SlotService {
 	//슬롯 등록
 	@Transactional
 	public void 슬롯등록(SlotSaveRequestDto slotDto) {
-		Theme theme = themeRepository.findByThemeName(slotDto.getThemeName()).orElseThrow(()->{
+		Theme theme = themeRepository.findById(slotDto.getThemeId()).orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Branch branch = branchRepository.findAllBybranchName(slotDto.getBranchName()).orElseThrow(()->{
+		Branch branch = branchRepository.findById(slotDto.getBranchId()).orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
 		Slot slot = Slot.builder()
