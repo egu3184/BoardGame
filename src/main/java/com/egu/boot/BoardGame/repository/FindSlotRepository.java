@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.egu.boot.BoardGame.model.Branch;
 import com.egu.boot.BoardGame.model.QSlot;
 import com.egu.boot.BoardGame.model.Slot;
+import com.egu.boot.BoardGame.model.Theme;
 
 public interface FindSlotRepository {
 
@@ -18,6 +20,8 @@ public interface FindSlotRepository {
 										Boolean isReserved
 										);
 	
-	
+	 List<LocalDate> getLatestOpenedSlotDate(Branch branch, Theme theme);
+
+	List<LocalDate> findNotShowedDate(LocalDate minDate, LocalDate maxDate);
 	
 }

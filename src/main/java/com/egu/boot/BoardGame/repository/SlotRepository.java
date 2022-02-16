@@ -23,4 +23,6 @@ public interface SlotRepository extends JpaRepository<Slot, Integer> {
 	 
 	List<Slot> findAllBySlotDateAndBranchAndTheme(LocalDate slotDate, Branch branch, Theme theme);
 	//객체를 넣어도 찾을 수 있다!
+	
+	
 }

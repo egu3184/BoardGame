@@ -93,12 +93,7 @@ public class SlotApiController {
 			@RequestParam(value="slotDate") LocalDate slotDate, 
 			@RequestParam(value="branchId") String branchId,
 			@RequestParam(value="themeId") String themeId){
-		
-		System.out.println("slotDate ="+slotDate);
-		System.out.println("branch ="+branchId);
-		System.out.println("theme ="+themeId);
 		List<Slot> list =  slotService.슬롯현황조회(slotDate, Integer.parseInt(branchId), Integer.parseInt(themeId));
-		
 		return responseService.getListResult(list);
 	}
 	
@@ -109,6 +104,26 @@ public class SlotApiController {
 		return responseService.getSingleResult(slot);
 	}
 	
+	//슬롯 오픈 날짜 조회
+	@GetMapping("/slots/date") // 임시, 수정 요망
+	public SingleResult<LocalDate> getSlotOpenedDate(
+			@RequestParam(value = "branchId")String branchId,
+			@RequestParam(value = "themeId")String themeId){
+		LocalDate slotTime = slotService.슬롯오픈날짜조회(Integer.parseInt(branchId),Integer.parseInt(themeId));
+		return responseService.getSingleResult(slotTime);
+	}
+	
+	//minDate와 maxDate 사이에 빈 날짜 검색.
+	@GetMapping("/slots/date/disabled")	// 임시, 수정 요망
+	public ListResult<LocalDate> getDisableDate(
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			@RequestParam(value = "min")LocalDate minDate,
+			@DateTimeFormat(pattern = "yyyy-MM-dd")
+			@RequestParam(value = "max")LocalDate maxDate){
+		List<LocalDate> list = slotService.빈날짜찾기(minDate, maxDate);
+	
+		return responseService.getListResult(list);
+	}
 	
 	
 	

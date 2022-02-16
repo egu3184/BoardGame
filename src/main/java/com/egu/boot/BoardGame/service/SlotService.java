@@ -3,6 +3,7 @@ package com.egu.boot.BoardGame.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,8 @@ import com.egu.boot.BoardGame.repository.ThemeRepository;
 @Service
 public class SlotService {
 
+	@Autowired
+	private FindSlotRepository findSlotRepository;
 	
 	@Autowired
 	private SlotRepository slotRepository;
@@ -104,16 +107,14 @@ public class SlotService {
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
 		List<Slot> list = slotRepository.findAllBySlotDateAndBranchAndTheme(slotDate, branch, theme);
-
 		return list;
 	}
 
+	
 	@Transactional
 	public void 슬롯일괄등록(SlotSaveRequestDto slotDto) {
-
-		String openTime = "09:00:00";
-		String endTime = "21:00:00";
-		
+		String openTime = "10:00:00";
+		String endTime = "23:30:00";
 		LocalTime slotOpenTime = LocalTime.parse(openTime);
 		LocalTime slotCloseTime = LocalTime.parse(endTime);
 		LocalTime slotTime = slotOpenTime;
@@ -121,11 +122,54 @@ public class SlotService {
 		while(slotTime.isBefore(slotCloseTime)) {	//Open시간이 Close시간보다 이전이니?
 			slotDto.setSlotTime(slotTime);
 			슬롯등록(slotDto);
-			slotTime = slotTime.plusHours(2);		//두시간 추가	
+			slotTime = slotTime.plusHours(1).plusMinutes(30);		//1시간 30분 추가	
+		}
+	}
+	
+	
+	@Transactional
+	public LocalDate 슬롯오픈날짜조회(int branchId, int themeId) {
+		Theme theme = themeRepository.findById(themeId).orElseThrow(()->{
+			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
+		});
+		Branch branch = branchRepository.findById(branchId).orElseThrow(()->{
+			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
+		});
+		List<LocalDate> list = findSlotRepository.getLatestOpenedSlotDate(branch, theme);
+		LocalDate date = list.get(0);
+		return date;
+	}
+
+	@Transactional
+	public List<LocalDate> 빈날짜찾기(LocalDate minDate, LocalDate maxDate) {
+		List<LocalDate> list =  findSlotRepository.findNotShowedDate(minDate, maxDate);
+		if(list.isEmpty()) {
+			System.out.println("서비스 메서드 : 리스트 못 받음. ");
+		}
+		for(LocalDate dd : list) {
+			System.out.println("DB에서 받은 리스트");
+			System.out.println(dd);
+		}
+		
+		List<LocalDate> responseDateList = new ArrayList<>();
+		LocalDate responseDate = minDate;
+		while(true) {
+			responseDateList.add(responseDate);
+			responseDate = responseDate.plusDays(1);
+			if(responseDate.isAfter(maxDate)) break;
+		};
+		for(LocalDate ss : responseDateList) {
+			System.out.println("하루씩 늘렸음.");
+			System.out.println(ss);
 		}
 		
 		
-		
+		//중복은 없음.
+		for(LocalDate date : list) 
+			responseDateList.remove(date);
+//		for(LocalDate date : responseDateList) 
+//		System.out.println(date);	
+		return responseDateList;
 	}
 
 }
