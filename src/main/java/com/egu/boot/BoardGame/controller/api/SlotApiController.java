@@ -27,7 +27,10 @@ import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.ListResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
+import com.egu.boot.BoardGame.model.dto.ResponseDto;
+import com.egu.boot.BoardGame.model.dto.SlotDto;
 import com.egu.boot.BoardGame.model.dto.SlotSaveRequestDto;
+import com.egu.boot.BoardGame.model.dto.SlotDto.SlotResponseDto;
 import com.egu.boot.BoardGame.repository.FindSlotRepository;
 import com.egu.boot.BoardGame.service.SlotService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
@@ -87,21 +90,23 @@ public class SlotApiController {
 //		List<Slot> list=  findSlotRepository.searchSlot(id, startDateTime, endDateTime, isOpened, isReserved);
 //		return responseService.getListResult(list);
 //	}
+	
 	@GetMapping(value = "/slots")
-	public ListResult<Slot> findSlot(
+	public ListResult<SlotResponseDto> findSlot(
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(value="slotDate") LocalDate slotDate, 
 			@RequestParam(value="branchId") String branchId,
-			@RequestParam(value="themeId") String themeId){
-		List<Slot> list =  slotService.슬롯현황조회(slotDate, Integer.parseInt(branchId), Integer.parseInt(themeId));
-		return responseService.getListResult(list);
+			@RequestParam(value="themeId") String themeId
+			){
+		List<SlotResponseDto> dto =  slotService.슬롯현황조회(slotDate, Integer.parseInt(branchId), Integer.parseInt(themeId));
+		return responseService.getListResult(dto);
 	}
 	
 	//슬롯 단일 조회
 	@GetMapping("/slots/{id}")
-	public SingleResult<Slot> findSlot(@PathVariable int id){
-		Slot slot = slotService.슬롯조회(id);
-		return responseService.getSingleResult(slot);
+	public SingleResult<SlotResponseDto> findSlot(@PathVariable int id){
+		SlotResponseDto dto = slotService.슬롯조회(id);
+		return responseService.getSingleResult(dto);
 	}
 	
 	//슬롯 오픈 날짜 조회
@@ -121,9 +126,9 @@ public class SlotApiController {
 			@DateTimeFormat(pattern = "yyyy-MM-dd")
 			@RequestParam(value = "max")LocalDate maxDate){
 		List<LocalDate> list = slotService.빈날짜찾기(minDate, maxDate);
-	
 		return responseService.getListResult(list);
 	}
+	
 	
 	
 	

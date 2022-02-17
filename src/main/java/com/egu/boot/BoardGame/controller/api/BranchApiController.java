@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.model.Branch;
 import com.egu.boot.BoardGame.model.api.CommonResult;
+import com.egu.boot.BoardGame.model.api.ListResult;
+import com.egu.boot.BoardGame.model.dto.BranchDto.BranchResponseDto;
+import com.egu.boot.BoardGame.model.dto.BranchDto;
+import com.egu.boot.BoardGame.model.dto.ResponseDto;
 import com.egu.boot.BoardGame.repository.BranchRepository;
 import com.egu.boot.BoardGame.service.BranchService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
@@ -22,11 +26,9 @@ public class BranchApiController {
 	private final ResponseService responseService;
 	
 	@GetMapping("/branches")
-	public CommonResult getBranchList() {
-		
-		List<Branch> list= branchService.지점조회();
-		
-		return responseService.getListResult(list) ;
+	public ListResult<BranchResponseDto> getBranchList() {
+		List<BranchResponseDto> dto = branchService.지점리스트조회();
+		return responseService.getListResult(dto);
 	}
 	
 	

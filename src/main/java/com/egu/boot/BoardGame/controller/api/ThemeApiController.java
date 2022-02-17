@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.model.api.CommonResult;
+import com.egu.boot.BoardGame.model.api.ListResult;
+import com.egu.boot.BoardGame.model.dto.ResponseDto;
+import com.egu.boot.BoardGame.model.dto.ThemeDto.ThemeResponseDto;
 import com.egu.boot.BoardGame.service.ThemeService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 
@@ -52,10 +55,10 @@ public class ThemeApiController {
 	
 	//테마 리스트 조회
 	@GetMapping("/themes")
-	public CommonResult findAllTheme(
-			@PageableDefault(sort = "id", direction = Direction.ASC) Pageable pageable) {
-		Page<Theme> list =  themeService.테마리스트(pageable);
-		return responseService.getPageListResult(list);
+	public ListResult<ThemeResponseDto> findAllTheme(
+			/* @PageableDefault(sort = "id" ,direction = Direction.ASC) Pageable pageable*/) {
+		List<ThemeResponseDto> dto =  themeService.테마리스트();
+		return responseService.getListResult(dto);
 	}
 	
 	//테마 조회
