@@ -1,5 +1,6 @@
 package com.egu.boot.BoardGame.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 import com.egu.boot.BoardGame.handler.CustomException;
 import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.Theme;
+import com.egu.boot.BoardGame.model.dto.ResponseDto;
+import com.egu.boot.BoardGame.model.dto.ThemeDto;
+import com.egu.boot.BoardGame.model.dto.ThemeDto.ThemeResponseDto;
 import com.egu.boot.BoardGame.repository.ThemeRepository;
 
 @Service
@@ -48,8 +52,13 @@ public class ThemeService {
 	}
 
 	@Transactional
-	public Page<Theme> 테마리스트(Pageable pageable) {
-		return themeRepository.findAll(pageable);
+	public List<ThemeResponseDto> 테마리스트() {
+		List<Theme> themes = themeRepository.findAll();
+		List<ThemeResponseDto> dtoList = new ArrayList<ThemeResponseDto>();
+		for(Theme theme:themes) {
+			dtoList.add(new ThemeDto.ThemeResponseDto(theme));
+		}
+		return dtoList;
 	}
 
 	@Transactional
