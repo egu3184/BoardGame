@@ -12,12 +12,14 @@ public class BranchDto {
 		private String branchName;
 		private String adress;
 		private String phoneNumber;
+		private Integer depositPrice;
 	
 		public  BranchResponseDto(Branch branch) {
 			this.branchId = branch.getId();
 			this.branchName = branch.getBranchName();
 			this.adress = branch.getAdress();
 			this.phoneNumber = branch.getPhoneNumber();
+			this.depositPrice = branch.getDepositPrice();
 		}
 	}
 	

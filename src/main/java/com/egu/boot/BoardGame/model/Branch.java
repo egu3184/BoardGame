@@ -25,5 +25,9 @@ public class Branch {
 	@Column
 	private String adress;
 	
+	@Column
+	private Integer depositPrice;
+	
+	
 	
 }
