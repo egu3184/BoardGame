@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.api.CommonResult;
-import com.egu.boot.BoardGame.model.dto.ReservationRequestDto;
+import com.egu.boot.BoardGame.model.api.SingleResult;
+import com.egu.boot.BoardGame.model.dto.ReservationDto;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationRequestDto;
 import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.service.ReservationService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
@@ -26,12 +28,16 @@ public class ReservationApiController {
 	private final ResponseService responseService;
 	private final ReservationService ReservationService;
 
-	// 회원, 비회원 예약
+	// 예약
 	@PostMapping("/reservations")
-	public CommonResult saveReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
-		Reservation reservation = ReservationService.예약등록(reservationRequestDto);
-		return responseService.getSingleResult(reservation);
+	public SingleResult<Integer> saveReservation(@RequestBody ReservationRequestDto reservationDto) {
+		Integer id = ReservationService.예약등록(reservationDto);
+		return responseService.getSingleResult(id);
 	}
+	
+	
+	
+	
 
 	// id로 예약 조회
 	@GetMapping("/reservations/{id}")

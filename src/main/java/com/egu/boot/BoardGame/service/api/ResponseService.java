@@ -32,7 +32,7 @@ public class ResponseService {
 	public void setSuccessResult(CommonResult result) {
 		result.setSuccess(true);
 		result.setCode(ResponseEnum.SUCCESS.getCode());
-		result.setMassage(ResponseEnum.SUCCESS.getMsg());
+		result.setMessage(ResponseEnum.SUCCESS.getMsg());
 	}
 
 	// 성공 결과를 리턴하는 메소드
@@ -47,7 +47,7 @@ public class ResponseService {
 		CommonResult result = new CommonResult();
 		result.setSuccess(false);
 		result.setCode(code);
-		result.setMassage(msg);
+		result.setMessage(msg);
 		return result;
 	}
 

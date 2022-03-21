@@ -11,14 +11,20 @@ import org.springframework.stereotype.Service;
 import com.egu.boot.BoardGame.handler.CustomException;
 import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.Branch;
+import com.egu.boot.BoardGame.model.Payment;
 import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.Slot;
+import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.model.User;
-import com.egu.boot.BoardGame.model.dto.ReservationRequestDto;
+import com.egu.boot.BoardGame.model.dto.ReservationDto;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationRequestDto;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationResponseDto;
 import com.egu.boot.BoardGame.repository.BranchRepository;
 import com.egu.boot.BoardGame.repository.FindReservationRepository;
+import com.egu.boot.BoardGame.repository.PaymentRepository;
 import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.repository.SlotRepository;
+import com.egu.boot.BoardGame.repository.ThemeRepository;
 import com.egu.boot.BoardGame.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,41 +39,36 @@ public class ReservationService {
 	private final SlotRepository slotRepository;
 	private final FindReservationRepository findReservationRepository;
 	private final BranchRepository branchRepository;
+	private final ThemeRepository themeRepository;
+	private final PaymentRepository paymentRepository;
 
 	@Transactional
-	public Reservation 예약등록(ReservationRequestDto reservationRequestDto) {
-		User user = null;
-		if(reservationRequestDto.getUserId() != null) {
-			 user = userRepository.findById(reservationRequestDto.getUserId()).orElseThrow(() -> {
-					throw new CustomException(ErrorCode.USER_NOT_FOUND);
-			 });
-		}
+	public Integer 예약등록(ReservationRequestDto reservationRequestDto) {
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
-		
+		if(slot.isReserved() == true) {	//중복 요청 처리
+			throw new CustomException(ErrorCode.SLOT_ALEADY_RESERVED);
+		}
 		Branch branch = branchRepository.findById(reservationRequestDto.getBranchId()).orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
+		Theme theme = themeRepository.findById(reservationRequestDto.getThemeId()).orElseThrow(()->{
+			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
+		});
+		Payment payment = paymentRepository.findById(reservationRequestDto.getPaymentId()).orElseThrow(()->{
+			throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
+		});
+		Reservation reservation = new Reservation(reservationRequestDto);
+		reservation.setBranch(branch);
+		reservation.setPayment(payment);
+		reservation.setSlot(slot);
+		reservation.setTheme(theme);
 		
-		if (slot.isReserved() == true) {
-			throw new IllegalArgumentException("이미 예약된 슬롯입니다.");
-		} else {
-			Reservation reservation = Reservation.builder()
-					.reservationTime(LocalDateTime.now())
-					.persons(reservationRequestDto.getPersons())
-					.payment(reservationRequestDto.getPayment())
-					.isPaid(false)
-					.user(user)
-					.bookerName(reservationRequestDto.getBookerName())
-					.phoneNumber(reservationRequestDto.getPhoneNumber())
-					.email(reservationRequestDto.getEmail())
-					.slot(slot)
-					.branch(branch).
-					build();
-			slot.setReserved(true); // 슬롯 예약됨으로 변경	
-			return reservationRepository.save(reservation);
-		}
+		Reservation reserv = reservationRepository.save(reservation); 
+		slot.setReserved(true); // 슬롯 예약됨으로 변경	
+		
+		return reserv.getId();
 	}
 
 	@Transactional
