@@ -60,6 +60,15 @@ public class SlotApiController {
 		return responseService.getSuccessResult();
 	}
 	
+	//슬롯 단일 조회
+	@GetMapping("/slots/{id}")
+	public SingleResult<SlotResponseDto> findSlot(@PathVariable int id){
+		SlotResponseDto dto = slotService.슬롯조회(id);
+		return responseService.getSingleResult(dto);
+	}
+	///
+	
+	
 	//슬롯 수정 
 	@PutMapping("/slots/{id}")
 	public CommonResult editSlot(@PathVariable int id, @RequestBody SlotSaveRequestDto requestSlot) {
@@ -102,12 +111,7 @@ public class SlotApiController {
 		return responseService.getListResult(dto);
 	}
 	
-	//슬롯 단일 조회
-	@GetMapping("/slots/{id}")
-	public SingleResult<SlotResponseDto> findSlot(@PathVariable int id){
-		SlotResponseDto dto = slotService.슬롯조회(id);
-		return responseService.getSingleResult(dto);
-	}
+	
 	
 	//슬롯 오픈 날짜 조회
 	@GetMapping("/slots/date") // 임시, 수정 요망

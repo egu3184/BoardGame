@@ -12,7 +12,9 @@ public enum ErrorCode {
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없음", 404),
 	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "테마를 찾을 수 없음",404),
 	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약내역을 찾을 수 없음",404),
+	SLOT_ALEADY_RESERVED(HttpStatus.NOT_ACCEPTABLE ,"이미 예약이 된 슬롯입니다.", 406),
 	SLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "슬롯을 찾을 수 없음", 404),
+	PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제정보를 찾을 수 없음." , 404)
 	;
 	
 	private HttpStatus status;
