@@ -15,8 +15,9 @@ public class ThemeDto {
 		private String minimumCapacity;
 		private String maximumCapacity;
 		private String playTime;
-		private String admissionFee;
+		private int admissionFee;
 		private String difficulty;
+		private String themeImg;
 		
 		public ThemeResponseDto(Theme theme){
 			this.themeId = theme.getId();
@@ -28,6 +29,7 @@ public class ThemeDto {
 			this.playTime = theme.getPlayTime();
 			this.admissionFee = theme.getAdmissionFee();
 			this.difficulty = theme.getDifficulty();
+			this.themeImg = theme.getThemeImg();
 		}
 	}
 

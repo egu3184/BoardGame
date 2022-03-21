@@ -37,7 +37,7 @@ public class Theme {
 	
 	private String playTime;
 	
-	private String admissionFee;
+	private int admissionFee;
 	
 	private String difficulty;
 	
@@ -47,6 +47,7 @@ public class Theme {
 //	@JsonIgnoreProperties({"reservation"})
 //	private List<Slot> slots;
 	
+	private String themeImg;
 	
 	
 	
