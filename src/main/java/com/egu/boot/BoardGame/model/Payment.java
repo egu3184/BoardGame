@@ -2,12 +2,16 @@ package com.egu.boot.BoardGame.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import com.egu.boot.BoardGame.model.dto.PaymentDto.PaymentRequestDto;
 
@@ -42,6 +46,10 @@ public class Payment {
 	private String depositorName; //입금자 이름
 	
 	private long depositPrice; //예약금 금액
+	
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="bankAccountId")
+	private BankAccount bankAccount;
 	
 	
 	public  Payment(PaymentRequestDto dto) {

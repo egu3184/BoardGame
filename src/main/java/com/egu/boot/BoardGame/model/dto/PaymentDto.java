@@ -14,6 +14,7 @@ public class PaymentDto {
 		private long totPrice;
 		private String depositorName;
 		private long depositPrice;
+		private Integer bankAccountId;
 	
 	}
 	

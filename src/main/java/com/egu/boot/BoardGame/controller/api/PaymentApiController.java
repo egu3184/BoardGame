@@ -22,7 +22,7 @@ public class PaymentApiController {
 	
 	@PostMapping("/payment")
 	public SingleResult<PaymentResponseDto> savePayment(@RequestBody PaymentRequestDto requestDto){
-		PaymentResponseDto responseDto = paymentService.결제정보저장(new Payment(requestDto));
+		PaymentResponseDto responseDto = paymentService.결제정보저장(requestDto);
 		return responseService.getSingleResult(responseDto);
 	}
 	
