@@ -58,7 +58,6 @@ public class SlotService {
 							.isOpened(false)
 							.isReserved(false)
 							.isShowed(false)
-							.reservation(null)
 							.slotDate(slotDto.getSlotDate())
 							.slotTime(slotDto.getSlotTime())
 							.theme(theme)
