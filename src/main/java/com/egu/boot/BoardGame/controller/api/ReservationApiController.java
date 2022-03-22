@@ -15,6 +15,7 @@ import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
 import com.egu.boot.BoardGame.model.dto.ReservationDto;
 import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationRequestDto;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationResponseDto;
 import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.service.ReservationService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
@@ -36,16 +37,17 @@ public class ReservationApiController {
 	}
 	
 	
-	
-	
-
 	// id로 예약 조회
 	@GetMapping("/reservations/{id}")
-	public CommonResult findReservation(@PathVariable int id) {
-		Reservation reservation = ReservationService.예약조회(id);
-		return responseService.getSingleResult(reservation);
+	public SingleResult<ReservationResponseDto> findReservation(@PathVariable int id) {
+		ReservationResponseDto dto = ReservationService.예약조회(id);
+		return responseService.getSingleResult(dto);
 	}
 
+	
+	
+	
+	
 	// 예약 검색 리스트 조회
 	@GetMapping("/reservations")
 	public CommonResult findReservation(

@@ -47,8 +47,11 @@ public class ReservationService {
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
-		if(slot.isReserved() == true) {	//중복 요청 처리
+		if(slot.isReserved() == true) {	//중복 요청시
 			throw new CustomException(ErrorCode.SLOT_ALEADY_RESERVED);
+		}
+		if(slot.isOpened() == false || slot.isShowed() == false) {	//닫힌 슬롯 혹은 비공개 슬롯시
+			throw new CustomException(ErrorCode.SLOT_FORBIDDEN);
 		}
 		Branch branch = branchRepository.findById(reservationRequestDto.getBranchId()).orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
@@ -72,11 +75,12 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public Reservation 예약조회(int id) {
+	public ReservationResponseDto 예약조회(int id) {
 		Reservation reservation = reservationRepository.findById(id).orElseThrow(()->{
 				throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
 			});
-		return reservation;
+		System.out.println(reservation.getBranch().getBranchName());
+		return new ReservationResponseDto(reservation);
 	}
 
 	@Transactional
