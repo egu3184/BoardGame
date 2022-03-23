@@ -31,9 +31,9 @@ public class ReservationApiController {
 
 	// 예약
 	@PostMapping("/reservations")
-	public SingleResult<Integer> saveReservation(@RequestBody ReservationRequestDto reservationDto) {
-		Integer id = ReservationService.예약등록(reservationDto);
-		return responseService.getSingleResult(id);
+	public SingleResult<ReservationResponseDto> saveReservation(@RequestBody ReservationRequestDto reservationDto) {
+		ReservationResponseDto dto = ReservationService.예약등록(reservationDto);
+		return responseService.getSingleResult(dto);
 	}
 	
 	

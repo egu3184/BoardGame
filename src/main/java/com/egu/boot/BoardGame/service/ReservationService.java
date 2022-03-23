@@ -1,7 +1,11 @@
 package com.egu.boot.BoardGame.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -43,7 +47,7 @@ public class ReservationService {
 	private final PaymentRepository paymentRepository;
 
 	@Transactional
-	public Integer 예약등록(ReservationRequestDto reservationRequestDto) {
+	public ReservationResponseDto 예약등록(ReservationRequestDto reservationRequestDto) {
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
@@ -67,11 +71,22 @@ public class ReservationService {
 		reservation.setPayment(payment);
 		reservation.setSlot(slot);
 		reservation.setTheme(theme);
-		
+		reservation.setReservationNumber(
+				 makeReservationNumber(slot.getSlotDate(), theme.getId(), branch.getId(),  reservationRequestDto.getPhoneNum())
+				);
 		Reservation reserv = reservationRepository.save(reservation); 
 		slot.setReserved(true); // 슬롯 예약됨으로 변경	
 		
-		return reserv.getId();
+		return new ReservationResponseDto(reserv);
+	}
+	
+	public String makeReservationNumber(LocalDate date, int themeId, int branchId, String phoneNum ) {
+		//날짜 / 테마번호id / 지점id / 슬롯id / 예약자 뒷자리2개 / 난수 3개
+		// ex) 202203231184939
+		String phoneNumber = phoneNum.replaceAll("[^0-9]", "").substring(9);	//마지막 2자리
+		int randomNumber = new Random().nextInt(999); //난수 3자리
+		return date.format(DateTimeFormatter.BASIC_ISO_DATE)+
+												Integer.toString(themeId) + Integer.toString(branchId)+phoneNumber+randomNumber;
 	}
 
 	@Transactional

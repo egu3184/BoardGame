@@ -76,6 +76,9 @@ public class Reservation {
 	@Column(nullable = false)
 	private boolean conditionsAgree; //이용 약관 동의
 	
+	@Column(nullable = false)
+	private String reservationNumber;
+	
 	
 	public Reservation(ReservationRequestDto reservationRequestDto
 //			, Payment payment, Branch branch, Slot slot, Theme theme
@@ -84,10 +87,6 @@ public class Reservation {
 		 this.numUsers = reservationRequestDto.getNumUsers(); 
 		 this.privacyAgree = reservationRequestDto.isPrivacyAgree(); 
 		 this.conditionsAgree = reservationRequestDto.isPrivacyAgree();
-//		 this.payment = payment;
-//		 this.slot = slot;
-//		 this.theme = theme;
-//		 this.branch = branch;
 		 this.phoneNumber = reservationRequestDto.getPhoneNum();
 		
 	}

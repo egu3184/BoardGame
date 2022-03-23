@@ -50,6 +50,7 @@ public class ReservationDto {
 		private long totPrice;
 		private LocalDate slotDate;
 		private LocalTime slotTime;
+		private String reservationNumber;
 		
 		
 		public ReservationResponseDto(Reservation reserv) {
@@ -74,6 +75,7 @@ public class ReservationDto {
 			this.depositPrice = reserv.getPayment().getDepositPrice();
 			this.paymentStatus = reserv.getPayment().getPayStatus();
 			this.totPrice = reserv.getPayment().getTotPrice();
+			this.reservationNumber = reserv.getReservationNumber();
 			
 		}
 	}
