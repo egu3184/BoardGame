@@ -76,7 +76,7 @@ public class ReservationService {
 				);
 		Reservation reserv = reservationRepository.save(reservation); 
 		slot.setReserved(true); // 슬롯 예약됨으로 변경	
-		
+
 		return new ReservationResponseDto(reserv);
 	}
 	
@@ -99,10 +99,18 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public List<Reservation> 예약검색조회(String bookerName, String phoneNumber, Integer id) {
-		List<Reservation> list =  findReservationRepository.searchReservation(bookerName, phoneNumber, id);
-		return list;
+	public ReservationResponseDto 예약번호조회(String reservationNum) {
+		Reservation reservation =reservationRepository.findByReservationNumber(reservationNum).orElseThrow(()->{
+			throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
+		});
+		return new ReservationResponseDto(reservation);
 	}
+
+//	@Transactional
+//	public List<Reservation> 예약검색조회(String bookerName, String phoneNumber, Integer id) {
+//		List<Reservation> list =  findReservationRepository.searchReservation(bookerName, phoneNumber, id);
+//		return list;
+//	}
 	
 	
 	
