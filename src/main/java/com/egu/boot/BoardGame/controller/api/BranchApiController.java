@@ -2,9 +2,11 @@ package com.egu.boot.BoardGame.controller.api;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
 import com.egu.boot.BoardGame.model.Branch;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.ListResult;
