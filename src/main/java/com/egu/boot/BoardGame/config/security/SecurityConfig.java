@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.egu.boot.BoardGame.handler.CustomJwtExceptionHandler;
 import com.egu.boot.BoardGame.service.CustomOauth2UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/user/**").authenticated()	 // /user/가 붙으면 인증된 유저만
 				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") // /admin/이 붙으면 관리자만
-				.antMatchers(HttpMethod.OPTIONS	, "/**").permitAll()
+				.antMatchers(HttpMethod.OPTIONS	, "/**").permitAll() //Options 허용
 				.anyRequest().permitAll() //나머지는 모두 허용
 			.and()
-				//JWT Token필터를 id/password 인증 필터 전에 넣음.
+				// Jwt 토큰이 없거나 형식이 맞지 않거나 만료된 경우
+				.exceptionHandling().authenticationEntryPoint(new CustomJwtExceptionHandler.CustomAuthenticationEntryPoint())
+			.and()	
+				.exceptionHandling().accessDeniedHandler(new CustomJwtExceptionHandler.CustomAccessDeniedHandler())
+				//Jwt Token필터를 id/password 인증 필터 전에 넣음.
+			.and()	
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 				
 	}

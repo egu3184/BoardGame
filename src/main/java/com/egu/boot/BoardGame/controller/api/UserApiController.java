@@ -49,7 +49,7 @@ public class UserApiController {
 		return responseService.getSuccessResult();
 	}
 	
-	@GetMapping("/users")
+	@GetMapping("/user")
 	public SingleResult<UserResponseDto> findUser(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //		System.out.println("authentication" + authentication);
@@ -60,7 +60,10 @@ public class UserApiController {
 		return responseService.getSingleResult(user);
 		
 	}
-	
+	@GetMapping("/admin/test")
+	public SingleResult<String> test(){
+		return responseService.getSingleResult("권한 체크! : 뜨면 뚫린 거");
+	}
 	
 	
 	

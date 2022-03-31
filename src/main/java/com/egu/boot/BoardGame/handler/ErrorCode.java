@@ -16,7 +16,8 @@ public enum ErrorCode {
 	SLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "슬롯을 찾을 수 없음", 404),
 	SLOT_FORBIDDEN(HttpStatus.FORBIDDEN, "접근할 수 없는 슬롯입니다.", 403),
 	ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "계좌를 찾을 수 없음", 404),
-	PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제정보를 찾을 수 없음." , 404)
+	PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제정보를 찾을 수 없음." , 404),
+	FORBBIDDEN(HttpStatus.FORBIDDEN, "해당 리소스에 접근하기 위한 권한이 없습니다", 403)
 	;
 	
 	private HttpStatus status;
