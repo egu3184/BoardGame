@@ -19,7 +19,7 @@ public class ExceptionController {
 	
 	@GetMapping("/entrypoint")
 	public CommonResult entrypointException() {
-		throw new CustomException(ErrorCode.FORBBIDDEN);
+		throw new CustomException(ErrorCode.TOKEN_NOT_VALID);
 	}
 	
 	@GetMapping("/accessdenied")
