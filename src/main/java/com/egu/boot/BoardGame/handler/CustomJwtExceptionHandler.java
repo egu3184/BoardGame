@@ -11,26 +11,35 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.egu.boot.BoardGame.model.api.CommonResult;
-import com.egu.boot.BoardGame.service.api.ResponseService;
-
-import lombok.RequiredArgsConstructor;
-
+import com.nimbusds.jose.shaded.json.JSONObject;
 
 public class CustomJwtExceptionHandler{
-
+	
 	@Component
 	public static class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint{
-		
+
 		@Override
 		public void commence(HttpServletRequest request, HttpServletResponse response,
 				AuthenticationException authException) throws IOException, ServletException {
-			response.sendRedirect("/exception/entrypoint");
+			
+			if(request.getAttribute("error") == ErrorCode.EXPIRED_TOKEN.getMessage()) {
+				setResponse(ErrorCode.EXPIRED_TOKEN, response);
+			}else if(request.getAttribute("error") == ErrorCode.INVALID_TOKEN.getMessage()){
+				setResponse(ErrorCode.INVALID_TOKEN, response);
+			}else if(request.getAttribute("error") == ErrorCode.UNKNOWN.getMessage()) {
+				setResponse(ErrorCode.UNKNOWN, response);
+			}else { // 인증되지 않은 유저가 요청했을 때
+				setResponse(ErrorCode.FORBBIDDEN, response);
+			}
 		}
+	}
+	
+	public static void setResponse(ErrorCode error, HttpServletResponse response) throws IOException {
+		JSONObject json = new JSONObject();
+		json.put("code", error.getCode());
+		json.put("message", error.getMessage());
+		response.getWriter().print(json);
 	}
 	
 	@Component
@@ -39,8 +48,8 @@ public class CustomJwtExceptionHandler{
 		@Override
 		public void handle(HttpServletRequest request, HttpServletResponse response,
 				AccessDeniedException accessDeniedException) throws IOException, ServletException {
-			response.sendRedirect("/exception/accessdenied");
-			
+			System.out.println("권한 체크");
+			setResponse(ErrorCode.ACCESS_DENIED, response);
 		}
 		
 	}
