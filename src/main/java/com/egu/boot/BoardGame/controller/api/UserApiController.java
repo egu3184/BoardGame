@@ -1,20 +1,15 @@
 	package com.egu.boot.BoardGame.controller.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
@@ -38,9 +33,9 @@ public class UserApiController {
 	
 	
 	@PostMapping("/login")
-	public SingleResult<String> login(@RequestBody UserRequestDto requestDto){
-		User user = userService.로그인(requestDto.getUserId(), requestDto.getPassword());
-		return responseService.getSingleResult(jwtTokenProvider.createToken(user.getUserId(), user.getRoles()));
+	public SingleResult<UserResponseDto> login(@RequestBody UserRequestDto requestDto){
+		UserResponseDto responseDto = userService.로그인(requestDto.getUserId(), requestDto.getPassword());
+		return responseService.getSingleResult(responseDto);
 	}
 	
 	@PostMapping("/signup")
@@ -49,8 +44,9 @@ public class UserApiController {
 		return responseService.getSuccessResult();
 	}
 	
-	@GetMapping("/user")
+	@GetMapping("/user/user")
 	public SingleResult<UserResponseDto> findUser(){
+		System.out.println("여기까지 오긴 하니");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //		System.out.println("authentication" + authentication);
 //		System.out.println("authentication의 username은?"+((User) authentication.getPrincipal()).getUserId());
@@ -62,9 +58,14 @@ public class UserApiController {
 	}
 	@GetMapping("/admin/test")
 	public SingleResult<String> test(){
+		System.out.println("admin만 들어올 수 있는 곳인데에엣");
 		return responseService.getSingleResult("권한 체크! : 뜨면 뚫린 거");
 	}
-	
+	@GetMapping("/user/test")
+	public SingleResult<String> testuser(){
+		System.out.println("user 이상만 들어올 수 있는 곳인데에엣");
+		return responseService.getSingleResult("권한 체크! : 뜨면 뚫린 거");
+	}
 	
 	
 //	@GetMapping("/admin/{id}")

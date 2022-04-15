@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
 import com.egu.boot.BoardGame.handler.CustomException;
 import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.RoleType;
@@ -28,12 +29,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final BCryptPasswordEncoder encoder;
-	
+	private final JwtTokenProvider jwtTokenProvider;
+
 	@Transactional
 	public User 회원가입(UserRequestDto dto) {
 		String rawPassword = dto.getPassword();
@@ -71,39 +72,32 @@ public class UserService implements UserDetailsService {
 		
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-		System.out.println("loadUserByUsername의 userId"+ userId);
-		
-		User user = userRepository.findByUserId(userId).orElseThrow(()->{
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		});
-		System.out.println("loadUserByUsername의 user"+user.getUserId());
-		
-		User userd = userRepository.findByUserId(userId).orElseThrow(()->{
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		});
-		//UserDetails를 리턴하는 과정에서 username이 UserDetails의 username으로 들어가는듯 싶다.
-		//이걸 어떻게 해결할까?
-		//userDetail의 직접 set한다 -> setter가 없음.
-		//컬럼명을 바꾼다 -> 이게 현실적일듯
-		//아니지! user도 UserDetails잖아! (상속)
-		System.out.println("loadUserByUsername의 userd"+userd.getUserId());
-		return userd;
-	}
+	
 
 	@Transactional
-	public User 로그인(String userId, String pw) {
+	public UserResponseDto 로그인(String userId, String pw) {
+		
 		User user = userRepository.findByUserId(userId).orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
+		System.out.println(user.getRoles());
+		//패스워드 검증
 		if(!passwordEncoder.matches(pw, user.getPassword())) {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		}
-		return user;
+		//토큰 생성
+		String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRoles());
+		String refreshToken = jwtTokenProvider.createRefreshToken();
+		//refreshToken db에 저장
+		saveRefreshToken(user, refreshToken);
+		//토큰 반환	
+		return new UserResponseDto(accessToken, refreshToken);
 	}
 	
-	
+	@Transactional
+	public void saveRefreshToken(User user, String refreshToken) {
+		user.setRefreshToken(refreshToken);
+	}
 	
 	
 }

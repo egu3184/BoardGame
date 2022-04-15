@@ -69,10 +69,14 @@ public class User implements UserDetails {
 //	@Enumerated(EnumType.STRING)
 //	private RoleType role;
 
+	//ORM에는 collection단위로 저장할 수 없는데,
+	//@ElementCollection 어노테이션을 통해 Collection임을 알려주는 동시에
+	//user_roles 테이블이 만들어진다.
 	@ElementCollection(fetch = FetchType.EAGER)
 	@Builder.Default
 	private List<String> roles = new ArrayList<>();
 	
+	private String refreshToken;
 	
 	
 	
