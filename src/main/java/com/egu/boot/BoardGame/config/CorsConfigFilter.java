@@ -21,7 +21,6 @@ public class CorsConfigFilter{
 
 	@Bean
 	public CorsFilter filter(){
-		System.out.println("cors 필터 거쳐감");
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
 		config.addAllowedHeader("*");
