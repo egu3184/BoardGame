@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.egu.boot.BoardGame.config.CorsConfigFilter;
+//import com.egu.boot.BoardGame.config.CorsConfigFilter;
 import com.egu.boot.BoardGame.handler.CustomJwtExceptionHandler;
 import com.egu.boot.BoardGame.service.CustomOauth2UserService;
 
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtTokenProvider jwtTokenProvider;
@@ -31,25 +32,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.addFilter(corsfilter.filter())
-//			.cors().disable()
+			.cors().disable()
 			.httpBasic().disable() // header에 (base64로 인코딩된) id와 pw를 받아 인증하는 방식.
-			.csrf().disable()	//rest api로 csrf 보안 필요없음.
-			//@PreAuthorize, @Secured 같은 어노테이션으로 권한 관리 가능 -> BUT 시큐리티 필터에서 예외처리 X, 사용 안하기로 
-//			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  
+			.csrf().disable()			 //rest api로 csrf 보안 필요없음.
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  //세션 사용 x
+			.and()
 			.authorizeRequests()
-				.antMatchers("/user/**").authenticated()	 // /user/가 붙으면 인증된 유저만
-				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") // /admin/이 붙으면 관리자만
+				.antMatchers("/user/**").authenticated()	 // 인증된 유저만 -> 아니라면 AuthenticationEntryPoint
+				.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')") // 관리자만
 				.antMatchers(HttpMethod.OPTIONS	, "/**").permitAll() //Options 허용
 				.anyRequest().permitAll() //나머지는 모두 허용
-			.and()
-				// Jwt 토큰이 없거나 형식이 맞지 않거나 만료된 경우
-				.exceptionHandling().authenticationEntryPoint(new CustomJwtExceptionHandler.CustomAuthenticationEntryPoint())
-			.and()	
-				.exceptionHandling().accessDeniedHandler(new CustomJwtExceptionHandler.CustomAccessDeniedHandler())
-				//Jwt Token필터를 id/password 인증 필터 전에 넣음.
-			.and()	
+				.and() //Authentication(인증)문제, 인증되지 않은 유저가 요청했을 때 혹은 jwt 토큰 에러가 났을 때
+					.exceptionHandling().authenticationEntryPoint(new CustomJwtExceptionHandler.CustomAuthenticationEntryPoint())
+				.and()	//Authorization(인가), 인증은 되었지만 권한이 없을 때 
+					.exceptionHandling().accessDeniedHandler(new CustomJwtExceptionHandler.CustomAccessDeniedHandler())
+			.and()	// Jwt Token필터를 id/password 인증 필터 전에 넣음.	
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-			
+			;
 	}
 	
 	
