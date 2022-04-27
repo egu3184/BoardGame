@@ -2,9 +2,11 @@ package com.egu.boot.BoardGame.model.dto;
 
 import com.egu.boot.BoardGame.model.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class TokenDto {
 
@@ -13,10 +15,11 @@ public class TokenDto {
 		private int Id;
 		private String accessToken;
 		private String refreshToken;
-		
 	}
 	
+	@Setter
 	@Getter
+	@NoArgsConstructor
 	public static class TokenResponseDto{
 		private String accessToken;
 		private String refreshToken;

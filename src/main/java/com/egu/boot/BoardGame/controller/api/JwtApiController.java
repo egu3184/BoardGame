@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
+import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
 import com.egu.boot.BoardGame.model.dto.TokenDto.TokenRequestDto;
 import com.egu.boot.BoardGame.model.dto.TokenDto.TokenResponseDto;
@@ -25,10 +26,8 @@ public class JwtApiController {
 	private final TokenService tokenService;
 	
 	@PostMapping("/reissue")
-	public SingleResult<TokenResponseDto> tokenReissue(@RequestBody TokenRequestDto requestDto
-			,HttpServletRequest request){
-		System.out.println(requestDto.getId());
-		TokenResponseDto responseDto = tokenService.토큰재발급(requestDto, request);
+	public CommonResult tokenReissue(HttpServletRequest request){
+		TokenResponseDto responseDto = tokenService.토큰재발급(request);
 		return responseService.getSingleResult(responseDto);
 	}
 	
