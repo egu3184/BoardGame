@@ -42,6 +42,7 @@ public class UserService {
 		User user = User.builder()
 				.userId(dto.getUserId())
 				.password(encPassword)
+				.provider("Application")
 				.username(dto.getUsername())
 				.roles(Collections.singletonList("ROLE_USER"))
 				.createDate(LocalDateTime.now())
@@ -57,7 +58,8 @@ public class UserService {
 		User user = userRepository.findByUserId(userId).orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
-		return  new UserResponseDto(user);
+//		return  new UserResponseDto(user);
+		return null;
 	}
 
 	@Transactional
@@ -76,20 +78,22 @@ public class UserService {
 
 	@Transactional
 	public UserResponseDto 로그인(String userId, String pw) {
-		
-		User user = userRepository.findByUserId(userId).orElseThrow(()->{
+		//회원 조회 
+		User user = userRepository.findByUserIdAndProvider(userId, "Application").orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
-		System.out.println(user.getRoles());
+		//패스워드 검증 전 체크
+		if(pw == null || pw.equals("")) {
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
 		//패스워드 검증
 		if(!passwordEncoder.matches(pw, user.getPassword())) {
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		}
 		//토큰 생성
-		String accessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRoles());
-		String refreshToken = jwtTokenProvider.createRefreshToken();
-		//refreshToken db에 저장
-		saveRefreshToken(user, refreshToken);
+		String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()), user.getRoles());
+		String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
+		
 		//토큰 반환	
 		return new UserResponseDto(accessToken, refreshToken);
 	}

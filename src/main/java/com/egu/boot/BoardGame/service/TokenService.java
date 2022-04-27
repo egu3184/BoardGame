@@ -23,35 +23,37 @@ public class TokenService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	public TokenResponseDto 토큰재발급(TokenRequestDto dto, HttpServletRequest request) {
+	public TokenResponseDto 토큰재발급(HttpServletRequest request) {
+		
 		//헤더에서 refreshToken 꺼내기
 		String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 		
-		//User 조회
-		User user = userRepository.findById(dto.getId()).orElseThrow(()->{
+		//유효성 검사
+		if(!jwtTokenProvider.validateRefreshToken(refreshToken)) {
+			throw new CustomException(ErrorCode.INVALID_TOKEN);
+		}
+		//토큰으로부터 id 꺼내기
+		int Id = Integer.parseInt(jwtTokenProvider.getId(refreshToken));
+
+		//id값으로 User 조회
+		User user = userRepository.findById(Id).orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
+		
 		//응답 객체 초기화
 		TokenResponseDto responseDto = null;
+	
+		//토큰 재발급
+		String reissuedRefreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
+		System.out.println(reissuedRefreshToken);
+		String reissuedAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()), user.getRoles());
+		System.out.println(reissuedAccessToken);
+		responseDto  = new TokenResponseDto(reissuedAccessToken, reissuedRefreshToken, "success");
 		
-		//유효성 검사 (날짜 + DB비교)
-		if(jwtTokenProvider.validateRefreshToken(refreshToken) == true
-				&& user != null && user.getRefreshToken().equals(refreshToken)) {
-			//토큰 재발급
-			String reissuedRefreshToken = jwtTokenProvider.createRefreshToken();
-			System.out.println(reissuedRefreshToken);
-			String reissuedAccessToken = jwtTokenProvider.createAccessToken(user.getUserId(), user.getRoles());
-			System.out.println(reissuedAccessToken);
-			responseDto  = new TokenResponseDto(reissuedAccessToken, reissuedRefreshToken, "success");
-			
-			//DB refreshToken 업데이트
-			user.setRefreshToken(reissuedRefreshToken);
-			
-		}else {
-			//user가 null이거나, 토큰이 유효하지 않다거나, DB와 다를 경우
+		//user가 null이거나, 토큰이 유효하지 않다거나
 //			throw new CustomException(ErrorCode.INVALID_TOKEN);
-			responseDto = new TokenResponseDto(null, null, "fail");
-		}
+//		responseDto = new TokenResponseDto(null, null, "fail");
+		
 		return responseDto;
 	}
 
