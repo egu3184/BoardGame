@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 public class BoardGameApplication {
@@ -21,6 +23,16 @@ public class BoardGameApplication {
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 	   return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+	
+	@Bean
+	public WebClient webClient() {
+		return WebClient.create();
 	}
 	
 }

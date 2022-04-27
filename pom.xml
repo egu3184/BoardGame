@@ -100,14 +100,14 @@
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
+			<!-- <version>${querydsl.version}</version> -->
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl.version}</version>
+			<!-- <version>${querydsl.version}</version> -->
 		</dependency>
 		
 		<!-- JWT -->
@@ -117,7 +117,18 @@
 		    <version>0.9.1</version>
 		</dependency>
 		
-
+		<!--  Gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		</dependency>
+		
+		<!--  webClient -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+	
 	</dependencies>
 
 	<build>
