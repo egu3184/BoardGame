@@ -1,5 +1,7 @@
 package com.egu.boot.BoardGame.config.security;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -54,44 +56,49 @@ public class JwtTokenProvider {
 	}
 	
 	//Jwt AccessToken 생성
-	public String createAccessToken(String userId, List<String> roles) {
+	public String createAccessToken(String id, List<String> roles) {
 		//Claims 클래스는 Jwt 속성 정보를 가지는 클래스.
-		Claims claims = Jwts.claims().setSubject(userId);
+		Claims claims = Jwts.claims().setSubject(id);
 		claims.put("roles", roles);
-		Date now = new Date();
+		LocalDateTime now = LocalDateTime.now();
 		return Jwts.builder()
 				.setClaims(claims)	//데이터
-				.setIssuedAt(now) //토큰 발생 일자
-				.setExpiration(new Date(now.getTime()+accessTokenValidMilisecond)) //만료일자. 현재시간+유효시간
+				.setIssuedAt(Date.from(now.atZone(ZoneId.of("Asia/Seoul")).toInstant())) //토큰 발생 일자
+				.setExpiration(Date.from(now.plusSeconds(60).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+//				.setExpiration(new Date(now.getTime()+accessTokenValidMilisecond)) //만료일자. 현재시간+유효시간
 				.signWith(SignatureAlgorithm.HS256, secretKey)//시그니처. 알고리즘+시크릿키
 				.compact();
 	}
 	
 	//Jwt RefreshToken 생성
-	public String createRefreshToken() {
-		Date now = new Date();
-		return Jwts.builder()
-				.setIssuedAt(now) //토큰 발생 일자
-				.setExpiration(new Date(now.getTime()+refreshTokenValidMilisecond)) //만료일자. 현재시간+유효시간
-				.signWith(SignatureAlgorithm.HS256, secretKey)//시그니처. 알고리즘+시크릿키
-				.compact();
+	public String createRefreshToken(String id) {
+				//Claims 클래스는 Jwt 속성 정보를 가지는 클래스.
+				Claims claims = Jwts.claims().setSubject(id);
+				LocalDateTime now = LocalDateTime.now();
+				return Jwts.builder()
+						.setClaims(claims)	//데이터
+						.setIssuedAt(Date.from(now.atZone(ZoneId.of("Asia/Seoul")).toInstant())) //토큰 발생 일자
+						.setExpiration(Date.from(now.plusSeconds(180).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+//						.setExpiration(new Date(now.getTime()+accessTokenValidMilisecond)) //만료일자. 현재시간+유효시간
+						.signWith(SignatureAlgorithm.HS256, secretKey)//시그니처. 알고리즘+시크릿키
+						.compact();
 	}
 	
 	//JWT 토큰으로 인증 정보를 조회
 	public Authentication getAuthentication(String token) {
 		// getUserId 메서드로 토큰으로부터 userId를 받고 loadUserByUsername으로 회원 정보 조회
-		User userDetails = (User)userDetailService.loadUserByUsername(this.getUserId(token));
+		User userDetails = (User)userDetailService.loadUserByUsername(this.getId(token));
 		
 		// UserDetails 객체와 권한을 바탕으로 UsernamePasswordAuthenticationToken 만들어 리턴
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 	
 	//JWT토큰에서 회원 구별 정보(userId) 추출
-	public String getUserId(String token) {
+	public String getId(String token) {
 		//받은 토큰을 시크릿키로 파싱하여 subject에 넣어둔 id값 꺼내오기
-		String token1 = Jwts.parser().setSigningKey(secretKey)
+		String userId = Jwts.parser().setSigningKey(secretKey)
 				.parseClaimsJws(token).getBody().getSubject();
-		return token1;
+		return userId;
 	}
 	
 	//Request의 Header에서 AccessToken을 파싱
@@ -135,6 +142,7 @@ public class JwtTokenProvider {
 			result = true;
 		} catch(Exception e) {
 			//어떤 exception이든 로그인 강제
+			System.out.println("로그인 실패!");
 			result = false;
 		}
 		System.out.println(result);

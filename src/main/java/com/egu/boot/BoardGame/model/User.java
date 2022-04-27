@@ -57,7 +57,6 @@ public class User implements UserDetails {
 	@Column
 	private LocalDateTime createDate;
 	
-	@Column(length = 30, nullable = false)
 	private String phoneNumber;
 	
 	private String provider;

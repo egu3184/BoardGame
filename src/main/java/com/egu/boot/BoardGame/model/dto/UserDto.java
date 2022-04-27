@@ -19,8 +19,8 @@ public class UserDto {
 	@Data
 	
 	public static class UserResponseDto{
-		private String userId;
-		private String username;
+//		private String userId;
+//		private String username;
 		
 		private String accessToken;
 		private String refreshToken;
@@ -32,10 +32,10 @@ public class UserDto {
 			this.refreshToken = refreshToken;
 		}
 		
-		public UserResponseDto(User user){
-			this.userId = user.getUserId();
-			this.username = user.getUsername();
-		}
+//		public UserResponseDto(User user){
+//			this.userId = user.getUserId();
+//			this.username = user.getUsername();
+//		}
 	}
 	
 }

@@ -19,17 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService{
 	private final UserRepository userRepository;
 	
 	@Override
-	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-		System.out.println("loadUserByUsername의 userId"+ userId);
-		User user = userRepository.findByUserId(userId).orElseThrow(()->{
+	public UserDetails loadUserByUsername(String Id) throws UsernameNotFoundException {
+		User user = userRepository.findById(Integer.parseInt(Id)).orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
-		System.out.println("loadUserByUsername의 user"+user.getUserId());
-		
-		User userd = userRepository.findByUserId(userId).orElseThrow(()->{
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		});
-		return userd;
+		return user;
 	}
 
 }
