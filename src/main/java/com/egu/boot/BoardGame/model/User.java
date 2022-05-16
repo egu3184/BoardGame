@@ -1,6 +1,5 @@
 package com.egu.boot.BoardGame.model;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -51,8 +48,8 @@ public class User implements UserDetails {
 	@Column(length = 200, unique = true, nullable=false)
 	private String userId;
 	
-	@Column(length = 50, nullable = false)
-	private String username;
+	@Column(length = 50, nullable = false, unique = true)
+	private String nickname;
 	
 	@Column
 	private LocalDateTime createDate;
@@ -60,13 +57,6 @@ public class User implements UserDetails {
 	private String phoneNumber;
 	
 	private String provider;
-	
-	private String provider_id;
-
-	private boolean isRegisterd;
-	
-//	@Enumerated(EnumType.STRING)
-//	private RoleType role;
 
 	//ORM에는 collection단위로 저장할 수 없는데,
 	//@ElementCollection 어노테이션을 통해 Collection임을 알려주는 동시에
@@ -75,8 +65,13 @@ public class User implements UserDetails {
 	@Builder.Default
 	private List<String> roles = new ArrayList<>();
 	
-	private String refreshToken;
+	private boolean isEnabled;
 	
+	private LocalDateTime deactivatedDate; 
+	
+	private boolean privacyAgree;
+	
+	private boolean prAgree;
 	
 	
 	@Override
@@ -97,7 +92,12 @@ public class User implements UserDetails {
 	}
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return this.isEnabled;
+	}
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
