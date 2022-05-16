@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.egu.boot.BoardGame.config.CorsConfigFilter;
 //import com.egu.boot.BoardGame.config.CorsConfigFilter;
 import com.egu.boot.BoardGame.handler.CustomJwtExceptionHandler;
-import com.egu.boot.BoardGame.service.CustomOauth2UserService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -5,11 +5,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
@@ -44,18 +45,21 @@ public class UserApiController {
 		return responseService.getSuccessResult();
 	}
 	
-	@GetMapping("/user/user")
-	public SingleResult<UserResponseDto> findUser(){
-		System.out.println("여기까지 오긴 하니");
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		System.out.println("authentication" + authentication);
-//		System.out.println("authentication의 username은?"+((User) authentication.getPrincipal()).getUserId());
-//		User user  = userService.회원찾기(authentication.getName());
-		UserResponseDto user  = userService.회원찾기(((User) authentication.getPrincipal()).getUserId());
-		
+//	@GetMapping("/users/{userId}")
+//	public SingleResult<UserResponseDto> findUser(@PathVariable String userId){
+//		UserResponseDto user  = userService.회원찾기(userId);
+//		return responseService.getSingleResult(user);
+//	}
+	
+	@GetMapping("/users")
+	SingleResult<UserResponseDto> findUserByUserInfo(
+											@ModelAttribute UserRequestDto requestDto){
+		UserResponseDto user  = userService.회원정보로찾기(requestDto);
 		return responseService.getSingleResult(user);
-		
 	}
+	
+	
+	
 	@GetMapping("/admin/test")
 	public SingleResult<String> test(){
 		System.out.println("admin만 들어올 수 있는 곳인데에엣");
