@@ -16,10 +16,11 @@ import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
 import com.egu.boot.BoardGame.model.dto.KakaoDto;
+import com.egu.boot.BoardGame.model.dto.NaverDto;
 import com.egu.boot.BoardGame.model.dto.TokenDto.TokenRequestDto;
 import com.egu.boot.BoardGame.model.dto.TokenDto.TokenResponseDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserResponseDto;
-import com.egu.boot.BoardGame.service.KakaoService;
+import com.egu.boot.BoardGame.service.SocialLoginService;
 import com.egu.boot.BoardGame.service.UserService;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 
@@ -31,45 +32,30 @@ import reactor.core.publisher.Mono;
 public class SocialLoginApiController {
 	
 	private final ResponseService responseService;
-	private final KakaoService kakaoService;
-	private final UserService userService;
-	private final JwtTokenProvider jwtTokenProvider;
-	
-//	//소셜 로그인 요청url 리턴
-//	@GetMapping("/login/{social}/url")
-//	public String getLoginUrl(@PathVariable String social) {
-//		String loginUrl = null;
-//		if(social.equals("kakao")) {
-//			loginUrl = kakaoService.makeLoginUrl();
-//			kakaoService.makeLoginUrl();
-//		}
-//		return loginUrl;
-//	}
-	
-//	@GetMapping("/social/login/{social}")
-//	public SingleResult<UserResponseDto> dddd(@RequestParam String code, @PathVariable String social) {
-//		System.out.println(code);
-//		String accessToken = null;
-//		UserResponseDto userResponseDto = null;
-//		if(social.equals("kakao")) {
-//			accessToken = kakaoService.getToken(code);
-//			KakaoDto userProfile = kakaoService.getKakaoProfile(accessToken);
-//			userResponseDto = kakaoService.kakaoLogin(userProfile);
-//		}
-//		
-//		return responseService.getSingleResult(userResponseDto);
-//	}
+	private final SocialLoginService socialLoginService;
 
 	@PostMapping("/social/login/{social}")
 	public SingleResult<UserResponseDto> dd(
 			@RequestBody TokenRequestDto dto, @PathVariable String social ){
+		System.out.println(dto.getAccessToken());
+		System.out.println(social);
+		//응답 객체 초기화
 		UserResponseDto userResponseDto = null;
+		//소셜별 처리
 		if(social.equals("kakao")) {
-			KakaoDto userProfile = kakaoService.getKakaoProfile(dto.getAccessToken());
-			userResponseDto = kakaoService.kakaoLogin(userProfile);
+			//카카오
+			KakaoDto userProfile = socialLoginService.getKakaoProfile(dto.getAccessToken());
+			userResponseDto = socialLoginService.kakaoLogin(userProfile);
+		}else if(social.equals("naver")) {
+			//네이버
+			NaverDto userProfile = socialLoginService.getNaverProfile(dto.getAccessToken());
+			userResponseDto = socialLoginService.naverLogin(userProfile);
+		}else if(social.equals("google")) {
+			userResponseDto = socialLoginService.googleLogin(dto.getAccessToken());
 		}
-		
 		return responseService.getSingleResult(userResponseDto);
 	}
+	
+	
 	
 }
