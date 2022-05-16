@@ -11,31 +11,28 @@ public class UserDto {
 	public static class UserRequestDto{
 		private String userId;
 		private String password;
-		private String username;
-		private String phoneNumber;
+		private String nickname;
+		private String phoneNum;
+		private boolean privacyAgree;
+		private boolean prAgree;
 		
 	}
 	
 	@Data
-	
 	public static class UserResponseDto{
-//		private String userId;
-//		private String username;
-		
+		private String userId;
 		private String accessToken;
 		private String refreshToken;
 		//추후 추가
-		
-		
+	
 		public UserResponseDto(String accessToken, String refreshToken) {
 			this.accessToken = accessToken;
 			this.refreshToken = refreshToken;
 		}
 		
-//		public UserResponseDto(User user){
-//			this.userId = user.getUserId();
-//			this.username = user.getUsername();
-//		}
+		public UserResponseDto(User user){
+			this.userId = user.getUserId();
+		}
 	}
 	
 }
