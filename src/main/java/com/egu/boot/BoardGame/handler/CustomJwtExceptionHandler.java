@@ -12,7 +12,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
+import com.google.gson.JsonObject;
 
 public class CustomJwtExceptionHandler{
 	
@@ -36,9 +36,9 @@ public class CustomJwtExceptionHandler{
 	}
 	
 	public static void setResponse(ErrorCode error, HttpServletResponse response) throws IOException {
-		JSONObject json = new JSONObject();
-		json.put("code", error.getCode());
-		json.put("message", error.getMessage());
+		JsonObject json = new JsonObject();
+		json.addProperty("code", error.getCode());
+		json.addProperty("message", error.getMessage());
 		response.getWriter().print(json);
 	}
 	
