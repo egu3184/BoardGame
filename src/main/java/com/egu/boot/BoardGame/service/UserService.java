@@ -1,7 +1,13 @@
 package com.egu.boot.BoardGame.service;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -9,6 +15,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +31,10 @@ import com.egu.boot.BoardGame.model.RoleType;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserRequestDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserResponseDto;
+import com.egu.boot.BoardGame.repository.QUserRepository;
+import com.egu.boot.BoardGame.repository.QUserRepositoryImpl;
 import com.egu.boot.BoardGame.repository.UserRepository;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,32 +45,47 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final QUserRepositoryImpl quserRepository;
 
 	@Transactional
-	public User 회원가입(UserRequestDto dto) {
-		String rawPassword = dto.getPassword();
+	public User 회원가입(UserRequestDto requestDto) {
+		//DTO의 모든 필드 값이 null이 아닌지 체크
+		for(Field field : requestDto.getClass().getDeclaredFields()) {
+			field.setAccessible(true);
+			try {
+				if(field.get(requestDto) == null) throw new CustomException(ErrorCode.USERINFO_NOT_ENOUGH);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		//마지막으로 다시 한번 중복 체크 
+		User user= quserRepository.findUserByUserInfo(requestDto);
+		if(!Objects.isNull(user)) throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
+		
+		//체크 후 가입 처리
+		String rawPassword = requestDto.getPassword();
 		String encPassword = passwordEncoder.encode(rawPassword);
-		User user = User.builder()
-				.userId(dto.getUserId())
+		user = User.builder()
+				.userId(requestDto.getUserId())
 				.password(encPassword)
 				.provider("Application")
-				.username(dto.getUsername())
+				.isEnabled(true)
+				.nickname(requestDto.getNickname())
 				.roles(Collections.singletonList("ROLE_USER"))
 				.createDate(LocalDateTime.now())
-				.phoneNumber(dto.getPhoneNumber())
+				.phoneNumber(requestDto.getPhoneNum())
+				.privacyAgree(requestDto.isPrivacyAgree())
+				.prAgree(requestDto.isPrAgree())
 				.build();
-		
 		return userRepository.save(user);
 	}
 
 	@Transactional
 	public UserResponseDto 회원찾기(String userId) {
-//		System.out.println("여기까지 들어온 건가?"+userId);
 		User user = userRepository.findByUserId(userId).orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
-//		return  new UserResponseDto(user);
-		return null;
+		return  new UserResponseDto(user);
 	}
 
 	@Transactional
@@ -73,35 +99,48 @@ public class UserService {
 		
 		
 	}
-
+	
+	@Transactional
+	public void 회원탈퇴(String rawPassword) {
+		//시큐리티 컨텍스트에서 유저 정보 가져오기
+		User user = (User) SecurityContextHolder.getContext().getAuthentication();
+		//비밀번호 재입력 비밀번호 체크
+		if(!passwordEncoder.matches(rawPassword, user.getPassword())) {
+			throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		}
+		user.setDeactivatedDate(LocalDateTime.now());
+		user.setEnabled(false);
+	}
 	
 
 	@Transactional
 	public UserResponseDto 로그인(String userId, String pw) {
-		//회원 조회 
+		// (1) 회원 조회 
 		User user = userRepository.findByUserIdAndProvider(userId, "Application").orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
-		//패스워드 검증 전 체크
-		if(pw == null || pw.equals("")) {
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		}
-		//패스워드 검증
-		if(!passwordEncoder.matches(pw, user.getPassword())) {
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		}
-		//토큰 생성
+		//(2-1) 회원 상태 체크
+		if(user.isEnabled() == false) throw new CustomException(ErrorCode.USER_DISABLED);
+		//(2-2) 패스워드 검증 전 체크
+		if(pw == null || pw.equals("")) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		//(2-3) 패스워드 검증
+		if(!passwordEncoder.matches(pw, user.getPassword())) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		// (3) 토큰 생성
 		String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()), user.getRoles());
 		String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
-		
-		//토큰 반환	
+		// (4) 스프링 시큐리티에 저장
+		SecurityContextHolder.getContext().setAuthentication((Authentication) user);
+		//(5) 토큰 반환	
 		return new UserResponseDto(accessToken, refreshToken);
 	}
 	
 	@Transactional
-	public void saveRefreshToken(User user, String refreshToken) {
-		user.setRefreshToken(refreshToken);
+	public UserResponseDto 회원정보로찾기(UserRequestDto requestDto) {
+		User user= quserRepository.findUserByUserInfo(requestDto);
+		if(user == null) throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
+		return new UserResponseDto(user);
 	}
+
 	
 	
 }
