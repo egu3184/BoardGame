@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.ListResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
@@ -50,6 +51,15 @@ public class ResponseService {
 		result.setMessage(msg);
 		return result;
 	}
+	
+	// 실패 결과를 리턴하는 메소드 - ErrorCode
+		public CommonResult getFailResult(ErrorCode errorCode) {
+			CommonResult result = new CommonResult();
+			result.setSuccess(false);
+			result.setCode(errorCode.getCode());
+			result.setMessage(errorCode.getMessage());
+			return result;
+		}
 
 	// 단일 결과 처리하는 메소드
 	public <T> SingleResult<T> getSingleResult(T data) {
