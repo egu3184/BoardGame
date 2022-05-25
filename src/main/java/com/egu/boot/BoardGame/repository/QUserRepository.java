@@ -12,4 +12,6 @@ public interface QUserRepository {
 	
 	User findUserByUserInfo(UserRequestDto requestDto);
 	
+	long modifyUserInfo(UserRequestDto requestDto, int id);
+	
 }
