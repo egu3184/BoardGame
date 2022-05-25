@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
@@ -51,11 +52,25 @@ public class UserApiController {
 //		return responseService.getSingleResult(user);
 //	}
 	
+	@GetMapping("/user")
+	public SingleResult<UserResponseDto> findLoginUser(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserResponseDto dto = new UserResponseDto(authentication);
+		return responseService.getSingleResult(dto);
+	}
+	
 	@GetMapping("/users")
-	SingleResult<UserResponseDto> findUserByUserInfo(
+	public CommonResult findUserByUserInfo(
 											@ModelAttribute UserRequestDto requestDto){
-		UserResponseDto user  = userService.회원정보로찾기(requestDto);
-		return responseService.getSingleResult(user);
+		User user  = userService.회원정보로찾기(requestDto);
+		return (user != null ) ? responseService.getSingleResult(new UserResponseDto(user)) : responseService.getSuccessResult();
+	}
+	
+	@PutMapping("/users")
+	public SingleResult<UserResponseDto> modifyUserInfo(
+											@RequestBody UserRequestDto requestDto){
+		UserResponseDto responseDto = userService.회원정보수정(requestDto);
+		return responseService.getSingleResult(responseDto);
 	}
 	
 	
