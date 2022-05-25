@@ -26,8 +26,9 @@ public class JwtApiController {
 	private final TokenService tokenService;
 	
 	@PostMapping("/reissue")
-	public CommonResult tokenReissue(HttpServletRequest request){
-		TokenResponseDto responseDto = tokenService.토큰재발급(request);
+	public CommonResult tokenReissue(@RequestBody TokenRequestDto dto){
+		System.out.println("재발급하러 왔니"+dto.getRefreshToken());
+		TokenResponseDto responseDto = tokenService.토큰재발급(dto);
 		return responseService.getSingleResult(responseDto);
 	}
 	

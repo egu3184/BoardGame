@@ -1,6 +1,7 @@
 package com.egu.boot.BoardGame.handler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,16 +23,17 @@ public class CustomJwtExceptionHandler{
 		@Override
 		public void commence(HttpServletRequest request, HttpServletResponse response,
 				AuthenticationException authException) throws IOException, ServletException {
-			
-			if(request.getAttribute("error") == ErrorCode.EXPIRED_TOKEN.getMessage()) {
-				setResponse(ErrorCode.EXPIRED_TOKEN, response);
-			}else if(request.getAttribute("error") == ErrorCode.INVALID_TOKEN.getMessage()){
-				setResponse(ErrorCode.INVALID_TOKEN, response);
-			}else if(request.getAttribute("error") == ErrorCode.UNKNOWN.getMessage()) {
-				setResponse(ErrorCode.UNKNOWN, response);
-			}else { // 인증되지 않은 유저가 요청했을 때
-				setResponse(ErrorCode.FORBBIDDEN, response);
-			}
+			System.out.println("2");
+//			if(request.getAttribute("error") == ErrorCode.EXPIRED_TOKEN.getMessage()) {
+//				setResponse(ErrorCode.EXPIRED_TOKEN, response);
+//			}else if(request.getAttribute("error") == ErrorCode.INVALID_TOKEN.getMessage()){
+//				setResponse(ErrorCode.INVALID_TOKEN, response);
+//			}else if(request.getAttribute("error") == ErrorCode.UNKNOWN.getMessage()) {
+//				setResponse(ErrorCode.UNKNOWN, response);
+//			}else { // 인증되지 않은 유저가 요청했을 때
+//				setResponse(ErrorCode.FORBBIDDEN, response);
+//			}
+//			request.setAttribute("error", null);
 		}
 	}
 	
@@ -39,7 +41,10 @@ public class CustomJwtExceptionHandler{
 		JsonObject json = new JsonObject();
 		json.addProperty("code", error.getCode());
 		json.addProperty("message", error.getMessage());
-		response.getWriter().print(json);
+		PrintWriter out =  response.getWriter();
+		out.print(json);
+//		out.flush();
+//		out.close();
 	}
 	
 	@Component

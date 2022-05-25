@@ -23,14 +23,14 @@ public class TokenService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	public TokenResponseDto 토큰재발급(HttpServletRequest request) {
+	public TokenResponseDto 토큰재발급(TokenRequestDto dto) {
 		
 		//헤더에서 refreshToken 꺼내기
-		String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+		String refreshToken = dto.getRefreshToken();
 		
 		//유효성 검사
 		if(!jwtTokenProvider.validateRefreshToken(refreshToken)) {
-			throw new CustomException(ErrorCode.INVALID_TOKEN);
+			throw new CustomException(ErrorCode.EXPIRED_REFRESH_TOKEN);
 		}
 		//토큰으로부터 id 꺼내기
 		int Id = Integer.parseInt(jwtTokenProvider.getId(refreshToken));
@@ -45,14 +45,8 @@ public class TokenService {
 	
 		//토큰 재발급
 		String reissuedRefreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
-		System.out.println(reissuedRefreshToken);
 		String reissuedAccessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()), user.getRoles());
-		System.out.println(reissuedAccessToken);
 		responseDto  = new TokenResponseDto(reissuedAccessToken, reissuedRefreshToken, "success");
-		
-		//user가 null이거나, 토큰이 유효하지 않다거나
-//			throw new CustomException(ErrorCode.INVALID_TOKEN);
-//		responseDto = new TokenResponseDto(null, null, "fail");
 		
 		return responseDto;
 	}

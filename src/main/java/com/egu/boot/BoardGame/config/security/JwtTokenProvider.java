@@ -1,5 +1,7 @@
 package com.egu.boot.BoardGame.config.security;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
@@ -8,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +21,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.egu.boot.BoardGame.handler.CustomException;
+import com.egu.boot.BoardGame.handler.CustomJwtExceptionHandler;
 import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.RoleType;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.service.CustomUserDetailsService;
 import com.egu.boot.BoardGame.service.UserService;
+import com.google.gson.JsonObject;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -87,7 +92,7 @@ public class JwtTokenProvider {
 	//JWT 토큰으로 인증 정보를 조회
 	public Authentication getAuthentication(String token) {
 		// getUserId 메서드로 토큰으로부터 userId를 받고 loadUserByUsername으로 회원 정보 조회
-		User userDetails = (User)userDetailService.loadUserByUsername(this.getId(token));
+		UserDetails userDetails = userDetailService.loadUserByUsername(this.getId(token));
 		
 		// UserDetails 객체와 권한을 바탕으로 UsernamePasswordAuthenticationToken 만들어 리턴
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
@@ -113,40 +118,41 @@ public class JwtTokenProvider {
 	
 	
 	//AccessToken 토큰의 유효성 확인
-	public boolean validateAccessToken(HttpServletRequest request,  String token) {
-		try {
-			//파싱 과정에서 jwt모듈이 알아서 예외를 발생 시킴. 
+	public boolean validateAccessToken(HttpServletResponse response,  String token) throws IOException {
+		try { 																	//파싱 과정에서 jwt모듈이 알아서 예외를 발생 시킴. 
 			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 			return true;
-		
-		}catch (ExpiredJwtException e) { //만료된 토큰일 경우
-			request.setAttribute("error",  ErrorCode.EXPIRED_TOKEN.getMessage());
-			
+		}catch (ExpiredJwtException e) { 					//만료된 토큰일 경우
+			makeResponse(ErrorCode.EXPIRED_TOKEN, response);
 		}catch (UnsupportedJwtException  				 //지원하지 않는 JWT
 							| MalformedJwtException			 //잘못된 JWT 서명
 							| IllegalArgumentException e) {	 //잘못된 토큰일 경우
-			request.setAttribute("error", ErrorCode.INVALID_TOKEN.getMessage());
+			makeResponse(ErrorCode.INVALID_TOKEN, response);
 		} catch(Exception e) {
-			request.setAttribute("error", ErrorCode.UNKNOWN.getMessage());
+			makeResponse(ErrorCode.INVALID_TOKEN, response);
 		}
 		return false;
 	}
 	
+	private void makeResponse(ErrorCode error, HttpServletResponse response) throws IOException {
+		JsonObject json = new JsonObject();
+		json.addProperty("code", error.getCode());
+		json.addProperty("message", error.getMessage());
+		PrintWriter out =  response.getWriter();
+		out.print(json);
+	}
+	
 	//Refresh 토큰의 유효성 확인
 	public boolean validateRefreshToken(String token) {
-		boolean result = false;
-		
 		try {
 			//파싱 과정에서 jwt모듈이 알아서 예외를 발생 시킴. 
 			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-			result = true;
+			return true;
 		} catch(Exception e) {
 			//어떤 exception이든 로그인 강제
-			System.out.println("로그인 실패!");
-			result = false;
+			System.out.println("리프레시 토큰 만료");
+			return false;
 		}
-		System.out.println(result);
-		return result;
 	}
 
 

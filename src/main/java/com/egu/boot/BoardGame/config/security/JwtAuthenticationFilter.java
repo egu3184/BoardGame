@@ -25,21 +25,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		//요청의 헤더로부터 AccessToken 꺼내기
+		//(1)요청의 헤더로부터 AccessToken 꺼내기
 		String token = jwtTokenProvider.resolveAccessToken(request);
+		System.out.println("필터에서 토큰 확인 = "+token);
 		
-		//토큰 유효성 확인
-		//->  유효하지 않다면 validateToken 메서드에서 exception 발생 -> 
-		if(token != null && jwtTokenProvider.validateAccessToken(request, token)) {
-			
-			//jwt 토큰에 저장된 userId로 Authentication 얻기
-			Authentication auth = jwtTokenProvider.getAuthentication(token);
-			
-			// 인증 정보(Authentication)를 스레드 내 저장소(SecurityContextHolder)에 저장.
-			// 이후 스레드에서 필요시 꺼내서 사용하게 됨.
-			SecurityContextHolder.getContext().setAuthentication(auth);
+		Boolean result =null;
+		//(2-B) 토큰이 담긴 요청시 
+		if(token != null) {
+			//(3) 토큰 유효성 확인 ->  유효하지 않다면 validateToken 메서드에서 exception 발생
+			result = jwtTokenProvider.validateAccessToken(response, token);
+			//(4) 토큰이 유효하면
+			if(result == true) {
+				//jwt 토큰에 저장된 userId로 Authentication 얻기
+				Authentication auth = jwtTokenProvider.getAuthentication(token);
+				// 인증 정보(Authentication)를 스레드 내 저장소(SecurityContextHolder)에 저장.
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			}
 		}
-		filterChain.doFilter(request, response);
+		//(2-A) 토큰 없는 요청시
+		if(result == null || result == true) {
+			filterChain.doFilter(request, response);
+		}
+		
 	}
 	
 	
