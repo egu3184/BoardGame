@@ -3,15 +3,22 @@ package com.egu.boot.BoardGame.repository;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserRequestDto;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.dml.UpdateClause;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.AbstractJPAQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,9 +28,10 @@ public class QUserRepositoryImpl implements QUserRepository{
 	
 	private final JPAQueryFactory jpaQueryFactory;
 	
+	private final EntityManager entitymanager;
+	
 	@Override
 	public User findUserByUserInfo(UserRequestDto requestDto) {
-		//BooleanBuilder는 querydsl에서 동적인 where절을 만들어주는 클래스이다. 
 		BooleanBuilder builder = getBooleanBuilder(requestDto);
 		try {
 			User result = jpaQueryFactory
@@ -37,6 +45,31 @@ public class QUserRepositoryImpl implements QUserRepository{
 		}				
 	}
 	
+	@Override
+	public long modifyUserInfo(UserRequestDto requestDto, int id) {
+		long excute =
+			getUpdateClause(requestDto)
+			.where(user.id.eq(id))
+			.execute();
+		System.out.println(excute);
+		return excute;
+	}
+	
+	//Dynamic Set을 사용해야할 때 - UpdateClause
+	private UpdateClause<JPAUpdateClause> getUpdateClause(UserRequestDto requestDto ){
+		UpdateClause<JPAUpdateClause> updateBuilder = new JPAUpdateClause(entitymanager, user);
+		Optional.ofNullable(requestDto.getNickname())
+			.ifPresent(nickaname -> updateBuilder.set(user.nickname, requestDto.getNickname()));
+		if(StringUtils.hasText(requestDto.getPhoneNum())) {
+			updateBuilder.set(user.phoneNumber, requestDto.getPhoneNum());
+		}
+		if(!ObjectUtils.isEmpty(requestDto.getPrAgree())) {
+			updateBuilder.set(user.prAgree, requestDto.getPrAgree());
+		}
+		return updateBuilder;
+	}
+	
+	//Dynamic Where절을 사용해야할 때 - BooleanBuilder
 	private BooleanBuilder getBooleanBuilder(UserRequestDto requestDto) {
 		BooleanBuilder builder = new BooleanBuilder();
 		Optional.ofNullable(requestDto.getUserId())
@@ -65,6 +98,8 @@ public class QUserRepositoryImpl implements QUserRepository{
 		if(userId == null) {return null;}
 		return user.userId.eq(userId);
 	}
+
+	
 
 	
 	

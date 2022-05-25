@@ -74,8 +74,8 @@ public class UserService {
 				.roles(Collections.singletonList("ROLE_USER"))
 				.createDate(LocalDateTime.now())
 				.phoneNumber(requestDto.getPhoneNum())
-				.privacyAgree(requestDto.isPrivacyAgree())
-				.prAgree(requestDto.isPrAgree())
+				.privacyAgree(requestDto.getPrivacyAgree())
+				.prAgree(requestDto.getPrAgree())
 				.build();
 		return userRepository.save(user);
 	}
@@ -95,9 +95,26 @@ public class UserService {
 	}
 
 	@Transactional
-	public void 회원수정(User requestUser) {
+	public UserResponseDto 회원정보수정(UserRequestDto requestDto) {	 
+
+		//마지막으로 다시 한번 중복 체크 
+		User user = quserRepository.findUserByUserInfo(requestDto);
+		if(!Objects.isNull(user)) throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
 		
+		//시큐리티 컨텍스트에서 유저 정보 가져오기
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		user = (User)auth.getPrincipal();
+		if(user == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		
+		//유저 정보 수정
+		long updateCount = quserRepository.modifyUserInfo(requestDto, user.getId());
+		if(updateCount > 0) {
+			return new UserResponseDto(userRepository.findById(user.getId()).orElseThrow(()->{
+				throw new CustomException(ErrorCode.USERINFO_CHANGE_FAILED);
+			}));
+		}else {
+				throw new CustomException(ErrorCode.USERINFO_CHANGE_FAILED);
+		}
 	}
 	
 	@Transactional
@@ -128,17 +145,14 @@ public class UserService {
 		// (3) 토큰 생성
 		String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(user.getId()), user.getRoles());
 		String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
-		// (4) 스프링 시큐리티에 저장
-		SecurityContextHolder.getContext().setAuthentication((Authentication) user);
-		//(5) 토큰 반환	
+		//(4) 토큰 반환	
 		return new UserResponseDto(accessToken, refreshToken);
 	}
 	
 	@Transactional
-	public UserResponseDto 회원정보로찾기(UserRequestDto requestDto) {
+	public User 회원정보로찾기(UserRequestDto requestDto) {
 		User user= quserRepository.findUserByUserInfo(requestDto);
-		if(user == null) throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
-		return new UserResponseDto(user);
+		return user;
 	}
 
 	
