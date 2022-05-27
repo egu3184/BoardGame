@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -27,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class QUserRepositoryImpl implements QUserRepository{
 	
 	private final JPAQueryFactory jpaQueryFactory;
-	
+	private final PasswordEncoder passwordEncoder;
 	private final EntityManager entitymanager;
 	
 	@Override
@@ -65,6 +66,10 @@ public class QUserRepositoryImpl implements QUserRepository{
 		}
 		if(!ObjectUtils.isEmpty(requestDto.getPrAgree())) {
 			updateBuilder.set(user.prAgree, requestDto.getPrAgree());
+		}
+		if(!ObjectUtils.isEmpty(requestDto.getNewPassword())) {
+			String newPw = passwordEncoder.encode(requestDto.getNewPassword());
+			updateBuilder.set(user.password, newPw);
 		}
 		return updateBuilder;
 	}

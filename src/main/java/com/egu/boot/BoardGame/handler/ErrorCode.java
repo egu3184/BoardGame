@@ -12,6 +12,7 @@ public enum ErrorCode {
 	UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류", 500),
 	REQUEST_BODY_MISSING(null ,"RequestBody가 누락되었습니다.", 400),
 	REQUEST_PARAM_MISSING(null ,"RequestParameter가 누락되었습니다.", 400),
+	BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.", 400 ),
 	
 	//회원 관련 - 1100
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "계정이 존재하지 않거나 이메일 또는 비밀번호가 정확하지 않습니다.", 1100),

@@ -17,7 +17,7 @@ public class UserDto {
 		private String phoneNum;
 		private Boolean privacyAgree;
 		private Boolean prAgree;
-		
+		private String newPassword;
 	}
 	
 	@Data

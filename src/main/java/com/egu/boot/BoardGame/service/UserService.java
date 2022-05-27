@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
 import com.egu.boot.BoardGame.handler.CustomException;
@@ -55,7 +56,7 @@ public class UserService {
 			try {
 				if(field.get(requestDto) == null) throw new CustomException(ErrorCode.USERINFO_NOT_ENOUGH);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+				throw new CustomException(ErrorCode.BAD_REQUEST);
 			}
 		}
 		//마지막으로 다시 한번 중복 체크 
@@ -96,17 +97,24 @@ public class UserService {
 
 	@Transactional
 	public UserResponseDto 회원정보수정(UserRequestDto requestDto) {	 
-
-		//마지막으로 다시 한번 중복 체크 
-		User user = quserRepository.findUserByUserInfo(requestDto);
-		if(!Objects.isNull(user)) throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
-		
-		//시큐리티 컨텍스트에서 유저 정보 가져오기
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		user = (User)auth.getPrincipal();
-		if(user == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		
-		//유저 정보 수정
+		// (1) 시큐리티 컨텍스트에서 유저 정보 가져오기
+		User user = new User();
+		try {
+			user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(user == null) throw new CustomException(ErrorCode.BAD_REQUEST);
+		} catch (Exception e) {
+			throw new CustomException(ErrorCode.BAD_REQUEST);
+		}	
+		if(!ObjectUtils.isEmpty(requestDto.getPassword())) {
+			//(2-1)비밀번호 변경시 - currentPw와 로그인 회원 pw 비교
+			if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
+				throw new CustomException(ErrorCode.INVALID_PASSWORD);	
+		}else {
+			//(2-2)비밀번호 제외 회원 정보 변경시 - 마지막으로 다시 한번 중복 체크 
+			if(!Objects.isNull(quserRepository.findUserByUserInfo(requestDto))) 
+				throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
+		}
+		//(3)유저 정보 수정
 		long updateCount = quserRepository.modifyUserInfo(requestDto, user.getId());
 		if(updateCount > 0) {
 			return new UserResponseDto(userRepository.findById(user.getId()).orElseThrow(()->{
