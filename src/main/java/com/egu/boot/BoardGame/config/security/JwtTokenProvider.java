@@ -69,7 +69,7 @@ public class JwtTokenProvider {
 		return Jwts.builder()
 				.setClaims(claims)	//데이터
 				.setIssuedAt(Date.from(now.atZone(ZoneId.of("Asia/Seoul")).toInstant())) //토큰 발생 일자
-				.setExpiration(Date.from(now.plusSeconds(60).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+				.setExpiration(Date.from(now.plusSeconds(3600).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
 //				.setExpiration(new Date(now.getTime()+accessTokenValidMilisecond)) //만료일자. 현재시간+유효시간
 				.signWith(SignatureAlgorithm.HS256, secretKey)//시그니처. 알고리즘+시크릿키
 				.compact();
@@ -83,7 +83,7 @@ public class JwtTokenProvider {
 				return Jwts.builder()
 						.setClaims(claims)	//데이터
 						.setIssuedAt(Date.from(now.atZone(ZoneId.of("Asia/Seoul")).toInstant())) //토큰 발생 일자
-						.setExpiration(Date.from(now.plusSeconds(180).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+						.setExpiration(Date.from(now.plusSeconds(7200).atZone(ZoneId.of("Asia/Seoul")).toInstant()))
 //						.setExpiration(new Date(now.getTime()+accessTokenValidMilisecond)) //만료일자. 현재시간+유효시간
 						.signWith(SignatureAlgorithm.HS256, secretKey)//시그니처. 알고리즘+시크릿키
 						.compact();
