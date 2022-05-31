@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationRequestDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +37,9 @@ public class Reservation {
 	@Column(nullable = false)
 	private Integer numUsers;		//유저수
 
-	@ManyToOne
-	@JoinColumn(name="userId")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
+	@JoinColumn(name="user_id")
 	private User user;
 	
 	@CreationTimestamp

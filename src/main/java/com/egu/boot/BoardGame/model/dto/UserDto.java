@@ -1,12 +1,20 @@
 package com.egu.boot.BoardGame.model.dto;
 
-import org.springframework.security.core.Authentication;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.User;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationResponseDto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Transactional(readOnly = true)
 public class UserDto {
 
 	@Data
@@ -28,6 +36,7 @@ public class UserDto {
 		private String phoneNum;
 		private String provider;
 		private String userId;
+		private List<ReservationResponseDto> reservationList;
 	
 		public UserResponseDto(String accessToken, String refreshToken) {
 			this.accessToken = accessToken;
@@ -42,10 +51,15 @@ public class UserDto {
 		    if(user.getProvider().equals("Application")) {
 		    	this.userId = user.getUserId();
 		    }
+		    List<ReservationResponseDto> list = new ArrayList<ReservationResponseDto>();
+		    for(Reservation reserv : user.getReservationList()) {
+		    	list.add(new ReservationResponseDto(reserv));
+		    }
+		    this.reservationList = list;
+		    		
 		}
 		
 		public UserResponseDto(Authentication authentication) {
-			System.out.println(authentication.getPrincipal());
 			User user = (User) authentication.getPrincipal();
 			this.nickname = user.getNickname();
 			this.phoneNum =  user.getPhoneNumber();

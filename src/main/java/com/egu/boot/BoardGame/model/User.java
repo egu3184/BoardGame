@@ -15,6 +15,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -57,6 +60,9 @@ public class User implements UserDetails {
 	private String phoneNumber;
 	
 	private String provider;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Reservation> reservationList;
 
 	//ORM에는 collection단위로 저장할 수 없는데,
 	//@ElementCollection 어노테이션을 통해 Collection임을 알려주는 동시에

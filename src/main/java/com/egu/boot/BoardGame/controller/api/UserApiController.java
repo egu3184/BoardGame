@@ -1,6 +1,8 @@
 	package com.egu.boot.BoardGame.controller.api;
 
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -18,6 +20,7 @@ import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.api.SingleResult;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationResponseDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserRequestDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserResponseDto;
 import com.egu.boot.BoardGame.service.UserService;
@@ -46,19 +49,6 @@ public class UserApiController {
 		return responseService.getSuccessResult();
 	}
 	
-//	@GetMapping("/users/{userId}")
-//	public SingleResult<UserResponseDto> findUser(@PathVariable String userId){
-//		UserResponseDto user  = userService.회원찾기(userId);
-//		return responseService.getSingleResult(user);
-//	}
-	
-	@GetMapping("/user")
-	public SingleResult<UserResponseDto> findLoginUser(){
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserResponseDto dto = new UserResponseDto(authentication);
-		return responseService.getSingleResult(dto);
-	}
-	
 	@GetMapping("/users")
 	public CommonResult findUserByUserInfo(
 											@ModelAttribute UserRequestDto requestDto){
@@ -73,6 +63,11 @@ public class UserApiController {
 		return responseService.getSingleResult(responseDto);
 	}
 	
+	@GetMapping("/user/reservtest")
+	public CommonResult reservtest(){
+		List<ReservationResponseDto> list  = userService.회원예약리스트찾기();
+		return responseService.getSingleResult(list);
+	}
 	
 	
 	@GetMapping("/admin/test")

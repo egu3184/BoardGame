@@ -55,9 +55,9 @@ public class SlotService {
 		});
 		Slot slot = Slot.builder()
 							.branch(branch)
-							.isOpened(false)
-							.isReserved(false)
-							.isShowed(false)
+							.isOpened(true)	//임시 true -> 이후 false
+							.isReserved(false)	
+							.isShowed(true)	//임시 true -> 이후 false
 							.slotDate(slotDto.getSlotDate())
 							.slotTime(slotDto.getSlotTime())
 							.theme(theme)
