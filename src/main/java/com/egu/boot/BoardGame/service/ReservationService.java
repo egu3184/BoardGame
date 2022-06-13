@@ -4,13 +4,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.egu.boot.BoardGame.handler.CustomException;
 import com.egu.boot.BoardGame.handler.ErrorCode;
@@ -20,12 +29,15 @@ import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.Slot;
 import com.egu.boot.BoardGame.model.Theme;
 import com.egu.boot.BoardGame.model.User;
+import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.model.dto.ReservationDto;
 import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationRequestDto;
 import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationResponseDto;
 import com.egu.boot.BoardGame.repository.BranchRepository;
 import com.egu.boot.BoardGame.repository.FindReservationRepository;
 import com.egu.boot.BoardGame.repository.PaymentRepository;
+import com.egu.boot.BoardGame.repository.QReservationRepository;
+import com.egu.boot.BoardGame.repository.QReservationRepositoryImpl;
 import com.egu.boot.BoardGame.repository.ReservationRepository;
 import com.egu.boot.BoardGame.repository.SlotRepository;
 import com.egu.boot.BoardGame.repository.ThemeRepository;
@@ -45,6 +57,7 @@ public class ReservationService {
 	private final BranchRepository branchRepository;
 	private final ThemeRepository themeRepository;
 	private final PaymentRepository paymentRepository;
+	private final QReservationRepositoryImpl qreservationRepository;
 
 	@Transactional
 	public ReservationResponseDto 예약등록(ReservationRequestDto reservationRequestDto) {
@@ -66,11 +79,19 @@ public class ReservationService {
 		Payment payment = paymentRepository.findById(reservationRequestDto.getPaymentId()).orElseThrow(()->{
 			throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
 		});
+		User user = null;
+		try {
+			user = (User) SecurityContextHolder.getContext().getAuthentication();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Reservation reservation = new Reservation(reservationRequestDto);
 		reservation.setBranch(branch);
 		reservation.setPayment(payment);
 		reservation.setSlot(slot);
 		reservation.setTheme(theme);
+		reservation.setReservationStatus(true);
+		reservation.setUser(user);
 		reservation.setReservationNumber(
 				 makeReservationNumber(slot.getSlotDate(), theme.getId(), branch.getId(),  reservationRequestDto.getPhoneNum())
 				);
@@ -90,29 +111,35 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public ReservationResponseDto 예약조회(int id) {
-		Reservation reservation = reservationRepository.findById(id).orElseThrow(()->{
+	public ReservationResponseDto 비회원예약조회(Integer reservationNumber) {
+		Reservation reservation = reservationRepository.findByReservationNumber(reservationNumber).orElseThrow(()->{
 				throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
 			});
-		System.out.println(reservation.getBranch().getBranchName());
 		return new ReservationResponseDto(reservation);
 	}
 
 	@Transactional
-	public ReservationResponseDto 예약번호조회(String reservationNum) {
-		Reservation reservation =reservationRepository.findByReservationNumber(reservationNum).orElseThrow(()->{
-			throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
-		});
-		return new ReservationResponseDto(reservation);
+	public Map<String, Object> 회원예약조회(Pageable pageable) {
+		List<ReservationResponseDto> dtoList = new ArrayList<>();
+		Map<String, Object> map = new HashMap<>();
+		try {
+			User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Page<Reservation> pageableList = reservationRepository.findByUserOrderByIdDesc(user, pageable);
+			for(int i=0; i<pageableList.getContent().size(); i++) {
+				dtoList.add(new ReservationResponseDto(pageableList.getContent().get(i)));
+			}
+			map.put("totalPages", pageableList.getTotalPages());
+			map.put("list", dtoList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
+	
+	
 
-//	@Transactional
-//	public List<Reservation> 예약검색조회(String bookerName, String phoneNumber, Integer id) {
-//		List<Reservation> list =  findReservationRepository.searchReservation(bookerName, phoneNumber, id);
-//		return list;
-//	}
 	
 	
 	
-	
+
 }
