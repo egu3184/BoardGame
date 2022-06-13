@@ -136,9 +136,22 @@ public class ReservationService {
 		return map;
 	}
 	
-	
-
-	
+	//회원 & 비회원 예약 수정
+		@Transactional
+		public long 예약수정(ReservationRequestDto requestDto) {
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			User user = null;
+			if(auth != null & auth.getPrincipal() instanceof User) {
+				//회원시
+				user = (User) auth.getPrincipal();
+			}else {
+				//비회원시 - 전화번호 확인
+				Reservation reserv = reservationRepository.getById(requestDto.getReservationId());
+				if(reserv.getPhoneNumber() != requestDto.getCheckPhoneNum()) { return 0; }
+			}
+			long result = qreservationRepository.updateReservation(requestDto, user);
+			return result;
+		}
 	
 	
 
