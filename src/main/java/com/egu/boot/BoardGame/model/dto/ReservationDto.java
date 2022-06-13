@@ -39,6 +39,7 @@ public class ReservationDto {
 	}
 	
 	@Getter
+	@Setter
 	public static class ReservationResponseDto{
 		private int id;
 		private Integer numUsers;
@@ -57,6 +58,7 @@ public class ReservationDto {
 		private LocalTime slotTime;
 		private String reservationNumber;
 		private String themeImg;
+		private String phoneNumber;
 		
 		
 		public ReservationResponseDto(Reservation reserv) {
@@ -83,6 +85,7 @@ public class ReservationDto {
 			this.totPrice = reserv.getPayment().getTotPrice();
 			this.reservationNumber = reserv.getReservationNumber();
 			this.themeImg = reserv.getTheme().getThemeImg();
+			this.phoneNumber = reserv.getPhoneNumber();
 		}
 		
 	}

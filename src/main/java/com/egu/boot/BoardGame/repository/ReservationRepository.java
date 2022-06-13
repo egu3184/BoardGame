@@ -16,8 +16,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 	Optional<Reservation> findByReservationNumber(String reservationNumber);
 	
 	Page<Reservation> findByUserOrderByIdDesc(User user, Pageable pageable);
-	
-	Optional<Reservation> findByReservationNumber(Integer reservationNumber);
+
 	
 	Optional<Reservation> findByUserAndId(User user, Integer id);
 	
