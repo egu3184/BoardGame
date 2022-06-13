@@ -3,6 +3,7 @@ package com.egu.boot.BoardGame.model.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import javax.persistence.Entity;
 
@@ -21,7 +22,7 @@ public class ReservationDto {
 	@Getter
 	@Setter
 	public static class ReservationRequestDto{
-		private String bookName; 
+		private String bookerName; 
 		private int slotId ;
 		private int branchId; 
 		private int themeId; 
@@ -31,6 +32,10 @@ public class ReservationDto {
 		private int paymentId;
 		private String phoneNum;
 		
+		private Boolean reservationStatus;
+		private Integer reservationId;
+		private String changePhoneNum;
+		private String checkPhoneNum;
 	}
 	
 	@Getter
@@ -51,6 +56,7 @@ public class ReservationDto {
 		private LocalDate slotDate;
 		private LocalTime slotTime;
 		private String reservationNumber;
+		private String themeImg;
 		
 		
 		public ReservationResponseDto(Reservation reserv) {
@@ -76,8 +82,9 @@ public class ReservationDto {
 			this.paymentStatus = reserv.getPayment().getPayStatus();
 			this.totPrice = reserv.getPayment().getTotPrice();
 			this.reservationNumber = reserv.getReservationNumber();
-			
+			this.themeImg = reserv.getTheme().getThemeImg();
 		}
+		
 	}
 	
 	

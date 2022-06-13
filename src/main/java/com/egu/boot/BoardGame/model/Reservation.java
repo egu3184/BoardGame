@@ -81,11 +81,13 @@ public class Reservation {
 	@Column(nullable = false)
 	private String reservationNumber;
 	
+	private Boolean reservationStatus;
+	
 	
 	public Reservation(ReservationRequestDto reservationRequestDto
 //			, Payment payment, Branch branch, Slot slot, Theme theme
 			) {
-		 this.bookerName = reservationRequestDto.getBookName();
+		 this.bookerName = reservationRequestDto.getBookerName();
 		 this.numUsers = reservationRequestDto.getNumUsers(); 
 		 this.privacyAgree = reservationRequestDto.isPrivacyAgree(); 
 		 this.conditionsAgree = reservationRequestDto.isPrivacyAgree();
