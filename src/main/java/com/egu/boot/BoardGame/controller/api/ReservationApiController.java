@@ -60,7 +60,7 @@ public class ReservationApiController {
 		return responseService.getSingleResult(map);
 	}
 	
-	//회원 예약 수정
+	//회원, 비회원 예약 수정
 	@PutMapping("/reservations")
 	public CommonResult updateUserReservation(@RequestBody ReservationRequestDto requestDto) {
 		long result = ReservationService.예약수정(requestDto);
