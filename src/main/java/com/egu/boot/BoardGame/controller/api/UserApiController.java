@@ -63,13 +63,6 @@ public class UserApiController {
 		return responseService.getSingleResult(responseDto);
 	}
 	
-	@GetMapping("/user/reservtest")
-	public CommonResult reservtest(){
-		List<ReservationResponseDto> list  = userService.회원예약리스트찾기();
-		return responseService.getSingleResult(list);
-	}
-	
-	
 	@GetMapping("/admin/test")
 	public SingleResult<String> test(){
 		System.out.println("admin만 들어올 수 있는 곳인데에엣");

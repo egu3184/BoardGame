@@ -28,7 +28,10 @@ public enum ErrorCode {
 	
     //테마 관련
 	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "테마를 찾을 수 없음",404),
-	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약내역을 찾을 수 없음",404),
+	
+	//예약 관련
+	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약내역을 찾을 수 없습니다.",404),
+	RESERVATION_UPDATE_FAIL(HttpStatus.NOT_FOUND, "예약 수정에 실패하였습니다.",404),
 	
 	//슬롯 관련
 	SLOT_ALEADY_RESERVED(HttpStatus.NOT_ACCEPTABLE ,"이미 예약이 된 슬롯입니다.", 406),

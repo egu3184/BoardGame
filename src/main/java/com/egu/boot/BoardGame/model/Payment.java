@@ -65,7 +65,7 @@ public class Payment {
 			break;
 		case "onSite":
 			this.paymentMethod = PaymentMethodType.OnSite;
-			this.payStatus = PaymentStatusType.Waiting;
+			this.payStatus = PaymentStatusType.DepositWaiting;
 			break;	
 		case "accountTransfer":
 			this.paymentMethod = PaymentMethodType.AccountTransfer;
