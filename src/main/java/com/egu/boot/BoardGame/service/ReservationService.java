@@ -59,6 +59,7 @@ public class ReservationService {
 	private final PaymentRepository paymentRepository;
 	private final QReservationRepositoryImpl qreservationRepository;
 
+	//예약등록
 	@Transactional
 	public ReservationResponseDto 예약등록(ReservationRequestDto reservationRequestDto) {
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
@@ -97,27 +98,49 @@ public class ReservationService {
 				);
 		Reservation reserv = reservationRepository.save(reservation); 
 		slot.setReserved(true); // 슬롯 예약됨으로 변경	
-
 		return new ReservationResponseDto(reserv);
 	}
 	
+	//예약번호 만드는 메서드
 	public String makeReservationNumber(LocalDate date, int themeId, int branchId, String phoneNum ) {
 		//날짜 / 테마번호id / 지점id / 슬롯id / 예약자 뒷자리2개 / 난수 3개
-		// ex) 202203231184939
 		String phoneNumber = phoneNum.replaceAll("[^0-9]", "").substring(9);	//마지막 2자리
-		int randomNumber = new Random().nextInt(999); //난수 3자리
+		int randomNumber = new Random().nextInt(999);
 		return date.format(DateTimeFormatter.BASIC_ISO_DATE)+
 												Integer.toString(themeId) + Integer.toString(branchId)+phoneNumber+randomNumber;
 	}
 
+	//비회원 예약조회
 	@Transactional
-	public ReservationResponseDto 비회원예약조회(Integer reservationNumber) {
+	public ReservationResponseDto 비회원예약조회(String reservationNumber) {
 		Reservation reservation = reservationRepository.findByReservationNumber(reservationNumber).orElseThrow(()->{
 				throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
 			});
-		return new ReservationResponseDto(reservation);
+		//비회원 예약조회시 보안을 위해 중요 정보 몇가지는 ***로 리턴
+		ReservationResponseDto responseDto = new ReservationResponseDto(reservation);
+		responseDto.setBookerName(encryptBookerName(reservation.getBookerName()));
+		responseDto.setPhoneNumber(encryptPhoneNumber(reservation.getPhoneNumber()));
+		return responseDto;
 	}
-
+	
+	//비회원 예약조회시 홍*동
+	private String encryptBookerName(String bookerName) {
+		String[] list = bookerName.split("");
+		list[1] = "*";
+		return String.join("", list);
+	}
+	//비회원 예약조회시 010-****-1234
+	private String encryptPhoneNumber(String phoneNumber) {
+		String[] list = phoneNumber.split("-");
+		String[] secoundNumber = list[1].split("");
+		for(int i=0; i<secoundNumber.length; i++) {
+			secoundNumber[i] = "*";
+		}
+		list[1] = String.join("", secoundNumber);
+		return String.join("-", list);
+	}
+	
+	//회원예약조회
 	@Transactional
 	public Map<String, Object> 회원예약조회(Pageable pageable) {
 		List<ReservationResponseDto> dtoList = new ArrayList<>();
@@ -137,21 +160,21 @@ public class ReservationService {
 	}
 	
 	//회원 & 비회원 예약 수정
-		@Transactional
-		public long 예약수정(ReservationRequestDto requestDto) {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			User user = null;
-			if(auth != null & auth.getPrincipal() instanceof User) {
-				//회원시
-				user = (User) auth.getPrincipal();
-			}else {
-				//비회원시 - 전화번호 확인
-				Reservation reserv = reservationRepository.getById(requestDto.getReservationId());
-				if(reserv.getPhoneNumber() != requestDto.getCheckPhoneNum()) { return 0; }
-			}
-			long result = qreservationRepository.updateReservation(requestDto, user);
-			return result;
+	@Transactional
+	public long 예약수정(ReservationRequestDto requestDto) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = null;
+		if(auth != null & auth.getPrincipal() instanceof User) {
+			//회원시
+			user = (User) auth.getPrincipal();
+		}else {
+			//비회원시 - 전화번호 확인
+			Reservation reserv = reservationRepository.getById(requestDto.getReservationId());
+			if(reserv.getPhoneNumber() != requestDto.getCheckPhoneNum()) { return 0; }
 		}
+		long result = qreservationRepository.updateReservation(requestDto, user);
+		return result;
+	}
 	
 	
 
