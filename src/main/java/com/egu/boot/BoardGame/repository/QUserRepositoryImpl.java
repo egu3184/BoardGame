@@ -50,7 +50,7 @@ public class QUserRepositoryImpl implements QUserRepository{
 	@Override
 	public long modifyUserInfo(UserRequestDto requestDto, int id) {
 		long excute =
-			getUpdateClause(requestDto)
+			updateClause(requestDto)
 			.where(user.id.eq(id))
 			.execute();
 		System.out.println(excute);
@@ -58,7 +58,7 @@ public class QUserRepositoryImpl implements QUserRepository{
 	}
 	
 	//Dynamic Set을 사용해야할 때 - UpdateClause
-	private UpdateClause<JPAUpdateClause> getUpdateClause(UserRequestDto requestDto ){
+	private UpdateClause<JPAUpdateClause> updateClause(UserRequestDto requestDto ){
 		UpdateClause<JPAUpdateClause> updateBuilder = new JPAUpdateClause(entitymanager, user);
 		Optional.ofNullable(requestDto.getNickname())
 			.ifPresent(nickaname -> updateBuilder.set(user.nickname, requestDto.getNickname()));

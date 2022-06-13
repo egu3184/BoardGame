@@ -61,8 +61,8 @@ public class User implements UserDetails {
 	
 	private String provider;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private List<Reservation> reservationList;
+//	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+//	private List<Reservation> reservationList;
 
 	//ORM에는 collection단위로 저장할 수 없는데,
 	//@ElementCollection 어노테이션을 통해 Collection임을 알려주는 동시에

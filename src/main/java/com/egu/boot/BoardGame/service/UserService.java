@@ -9,9 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +20,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
 import com.egu.boot.BoardGame.handler.CustomException;
 import com.egu.boot.BoardGame.handler.ErrorCode;
+import com.egu.boot.BoardGame.model.Reservation;
 import com.egu.boot.BoardGame.model.RoleType;
 import com.egu.boot.BoardGame.model.User;
+import com.egu.boot.BoardGame.model.dto.ReservationDto.ReservationResponseDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserRequestDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserResponseDto;
 import com.egu.boot.BoardGame.repository.QUserRepository;
@@ -41,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
 	private final UserRepository userRepository;
@@ -79,14 +80,6 @@ public class UserService {
 				.prAgree(requestDto.getPrAgree())
 				.build();
 		return userRepository.save(user);
-	}
-
-	@Transactional
-	public UserResponseDto 회원찾기(String userId) {
-		User user = userRepository.findByUserId(userId).orElseThrow(()->{
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		});
-		return  new UserResponseDto(user);
 	}
 
 	@Transactional
@@ -162,6 +155,13 @@ public class UserService {
 		User user= quserRepository.findUserByUserInfo(requestDto);
 		return user;
 	}
+	
+//	@Transactional
+//	public List<ReservationResponseDto> 회원예약리스트찾기(){
+//		//로그인 회원 정보 가져오기
+//		
+//		//회원의 userId가  
+//	}
 
 	
 	
