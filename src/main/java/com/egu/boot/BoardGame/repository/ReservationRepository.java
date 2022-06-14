@@ -13,7 +13,7 @@ import com.egu.boot.BoardGame.model.User;
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
 
 //	Reservation findByBookerNameAndPhoneNumber(String bookername, String phoneNumber);
-	Optional<Reservation> findByReservationNumber(String reservationNumber);
+	Optional<Reservation> findByReservationNumberAndBookerNameAndPhoneNumber(String reservationNumber,String bookerName, String phoneNum);
 	
 	Page<Reservation> findByUserOrderByIdDesc(User user, Pageable pageable);
 

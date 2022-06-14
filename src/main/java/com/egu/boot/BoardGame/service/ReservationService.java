@@ -112,8 +112,10 @@ public class ReservationService {
 
 	//비회원 예약조회
 	@Transactional
-	public ReservationResponseDto 비회원예약조회(String reservationNumber) {
-		Reservation reservation = reservationRepository.findByReservationNumber(reservationNumber).orElseThrow(()->{
+	public ReservationResponseDto 비회원예약조회(String reservationNumber,String bookerName, String phoneNum) {
+		Reservation reservation = 
+				reservationRepository.findByReservationNumberAndBookerNameAndPhoneNumber(
+						reservationNumber,bookerName, phoneNum).orElseThrow(()->{
 				throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
 			});
 		//비회원 예약조회시 보안을 위해 중요 정보 몇가지는 ***로 리턴

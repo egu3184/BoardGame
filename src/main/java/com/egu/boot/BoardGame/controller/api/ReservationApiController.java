@@ -48,9 +48,10 @@ public class ReservationApiController {
 	
 	//비회원 예약 조회
 	@GetMapping("/reservations/{reservationNumber}")
-	public SingleResult<ReservationResponseDto> getReservation(@PathVariable String reservationNumber) {
+	public SingleResult<ReservationResponseDto> getReservation(@PathVariable String reservationNumber,
+			@RequestParam String bookerName, @RequestParam String phoneNum) {
 		System.out.println(reservationNumber);
-		ReservationResponseDto dto = ReservationService.비회원예약조회(reservationNumber);
+		ReservationResponseDto dto = ReservationService.비회원예약조회(reservationNumber, bookerName, phoneNum );
 		return responseService.getSingleResult(dto);
 	}
 	
