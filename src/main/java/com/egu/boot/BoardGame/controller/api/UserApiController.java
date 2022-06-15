@@ -34,8 +34,6 @@ public class UserApiController {
 
 	private final UserService userService;
 	private final ResponseService responseService;
-	private final JwtTokenProvider jwtTokenProvider;
-	
 	
 	@PostMapping("/login")
 	public SingleResult<UserResponseDto> login(@RequestBody UserRequestDto requestDto){
@@ -53,7 +51,8 @@ public class UserApiController {
 	public CommonResult findUserByUserInfo(
 											@ModelAttribute UserRequestDto requestDto){
 		User user  = userService.회원정보로찾기(requestDto);
-		return (user != null ) ? responseService.getSingleResult(new UserResponseDto(user)) : responseService.getSuccessResult();
+//		System.out.println(user.getNickname());
+		return (user != null ) ? responseService.getSingleResult(new UserResponseDto(user)) : responseService.getFailResult(ErrorCode.USER_NOT_FOUND);
 	}
 	
 	@PutMapping("/users")
