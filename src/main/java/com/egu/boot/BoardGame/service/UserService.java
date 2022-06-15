@@ -51,15 +51,7 @@ public class UserService {
 
 	@Transactional
 	public User 회원가입(UserRequestDto requestDto) {
-		//DTO의 모든 필드 값이 null이 아닌지 체크
-		for(Field field : requestDto.getClass().getDeclaredFields()) {
-			field.setAccessible(true);
-			try {
-				if(field.get(requestDto) == null) throw new CustomException(ErrorCode.USERINFO_NOT_ENOUGH);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new CustomException(ErrorCode.BAD_REQUEST);
-			}
-		}
+		
 		//마지막으로 다시 한번 중복 체크 
 		User user= quserRepository.findUserByUserInfo(requestDto);
 		if(!Objects.isNull(user)) throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
@@ -67,18 +59,23 @@ public class UserService {
 		//체크 후 가입 처리
 		String rawPassword = requestDto.getPassword();
 		String encPassword = passwordEncoder.encode(rawPassword);
-		user = User.builder()
-				.userId(requestDto.getUserId())
-				.password(encPassword)
-				.provider("Application")
-				.isEnabled(true)
-				.nickname(requestDto.getNickname())
-				.roles(Collections.singletonList("ROLE_USER"))
-				.createDate(LocalDateTime.now())
-				.phoneNumber(requestDto.getPhoneNum())
-				.privacyAgree(requestDto.getPrivacyAgree())
-				.prAgree(requestDto.getPrAgree())
-				.build();
+		try {
+			user = User.builder()
+					.userId(requestDto.getUserId())
+					.password(encPassword)
+					.provider("Application")
+					.isEnabled(true)
+					.nickname(requestDto.getNickname())
+					.roles(Collections.singletonList("ROLE_USER"))
+					.createDate(LocalDateTime.now())
+					.phoneNumber(requestDto.getPhoneNum())
+					.privacyAgree(requestDto.getPrivacyAgree())
+					.prAgree(requestDto.getPrAgree())
+					.build();
+		} catch (NullPointerException e) {
+			throw new CustomException(ErrorCode.USERINFO_NOT_ENOUGH);
+		}
+		
 		return userRepository.save(user);
 	}
 
