@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +51,6 @@ public class UserApiController {
 	public CommonResult findUserByUserInfo(
 											@ModelAttribute UserRequestDto requestDto){
 		User user  = userService.회원정보로찾기(requestDto);
-//		System.out.println(user.getNickname());
 		return (user != null ) ? responseService.getSingleResult(new UserResponseDto(user)) : responseService.getFailResult(ErrorCode.USER_NOT_FOUND);
 	}
 	
@@ -60,6 +59,13 @@ public class UserApiController {
 											@RequestBody UserRequestDto requestDto){
 		UserResponseDto responseDto = userService.회원정보수정(requestDto);
 		return responseService.getSingleResult(responseDto);
+	}
+	
+	@DeleteMapping("/users")
+	public CommonResult deactivateUser(
+											@RequestBody UserRequestDto requestDto){
+		userService.회원탈퇴(requestDto);
+		return responseService.getSuccessResult();
 	}
 	
 	@GetMapping("/admin/test")

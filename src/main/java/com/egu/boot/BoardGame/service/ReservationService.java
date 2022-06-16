@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +50,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationService {
 
-
+	private final EntityManager entityManager;
 	private final ReservationRepository reservationRepository;
-	private final UserRepository userRepository;
 	private final SlotRepository slotRepository;
-	private final FindReservationRepository findReservationRepository;
 	private final BranchRepository branchRepository;
 	private final ThemeRepository themeRepository;
 	private final PaymentRepository paymentRepository;
@@ -174,7 +173,9 @@ public class ReservationService {
 			Reservation reserv = reservationRepository.getById(requestDto.getReservationId());
 			if(reserv.getPhoneNumber() != requestDto.getCheckPhoneNum()) { return 0; }
 		}
+		entityManager.detach(user);
 		long result = qreservationRepository.updateReservation(requestDto, user);
+		entityManager.find(Reservation.class, user.getId());
 		return result;
 	}
 	

@@ -21,6 +21,7 @@ public enum ErrorCode {
 	USERINFO_NOT_ENOUGH(null, "회원가입 필요 조건에 충족하지 않습니다.", 1103),
 	INVALID_PASSWORD(HttpStatus.NOT_FOUND, "비밀번호가 일치하지 않습니다", 1104), //?
 	USERINFO_CHANGE_FAILED(null, "회원정보 변경에 실패하였습니다.", 1105),
+	REQUEST_RELOGIN(null, "다시 로그인하십시오.", 1106),
 	
 	//지점 관련
 	BRANCH_NOT_FOUND(HttpStatus.NOT_FOUND, "지점을 찾을 수 없음", 404),

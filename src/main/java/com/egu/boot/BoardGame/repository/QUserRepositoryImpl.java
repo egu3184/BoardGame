@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import com.egu.boot.BoardGame.handler.CustomException;
+import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserRequestDto;
 import com.querydsl.core.BooleanBuilder;
@@ -39,7 +41,7 @@ public class QUserRepositoryImpl implements QUserRepository{
 			User result = jpaQueryFactory
 										.selectFrom(user)
 										.where(builder)
-										.fetchFirst();	//모두 unique컬럼이기 때문에 1개 이상 없음.
+										.fetchFirst();
 			return result;
 		} catch (NullPointerException e) {
 			//결과값이 없을 때
@@ -53,7 +55,6 @@ public class QUserRepositoryImpl implements QUserRepository{
 			updateClause(requestDto)
 			.where(user.id.eq(id))
 			.execute();
-		System.out.println(excute);
 		return excute;
 	}
 	
@@ -84,6 +85,10 @@ public class QUserRepositoryImpl implements QUserRepository{
 			.ifPresent(nickname -> builder.or(user.nickname.eq(requestDto.getNickname())));
 		Optional.ofNullable(requestDto.getPhoneNum())
 			.ifPresent(phoneNum -> builder.or(user.phoneNumber.eq(requestDto.getPhoneNum())));
+		//requestDto가 모두 null이라 where절이 없을 경우
+		if(builder.hashCode() == 0) {
+			throw new CustomException(ErrorCode.USERINFO_NOT_ENOUGH);
+		}
 		return builder;
 	}
 	
