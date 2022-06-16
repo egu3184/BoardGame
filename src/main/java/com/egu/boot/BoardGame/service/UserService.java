@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
 import com.egu.boot.BoardGame.handler.CustomException;
@@ -48,6 +52,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final QUserRepositoryImpl quserRepository;
+	private final EntityManager entityManager;
 
 	@Transactional
 	public User 회원가입(UserRequestDto requestDto) {
@@ -87,14 +92,13 @@ public class UserService {
 
 	@Transactional
 	public UserResponseDto 회원정보수정(UserRequestDto requestDto) {	 
-		// (1) 시큐리티 컨텍스트에서 유저 정보 가져오기
-		User user = new User();
-		try {
-			user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			if(user == null) throw new CustomException(ErrorCode.BAD_REQUEST);
-		} catch (Exception e) {
-			throw new CustomException(ErrorCode.BAD_REQUEST);
-		}	
+		User user = null;
+		//시큐리티 컨텍스트에서 유저 정보 가져오기
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth == null || !(auth.getPrincipal() instanceof User)) {
+			throw new CustomException(ErrorCode.REQUEST_RELOGIN);
+		}
+		user = (User)auth.getPrincipal();
 		if(!ObjectUtils.isEmpty(requestDto.getPassword())) {
 			//(2-1)비밀번호 변경시 - currentPw와 로그인 회원 pw 비교
 			if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword()))
@@ -104,27 +108,45 @@ public class UserService {
 			if(!Objects.isNull(quserRepository.findUserByUserInfo(requestDto))) 
 				throw new CustomException(ErrorCode.USERINFO_ALREADY_USED);
 		}
+		//(a)영속성 컨텍스트에 반영하기 위해 우선 준영속화
+		entityManager.detach(user);
+		
 		//(3)유저 정보 수정
 		long updateCount = quserRepository.modifyUserInfo(requestDto, user.getId());
+		//(b)앞에서 준영속화되었기 때문에 find로 DB에서 꺼내옴 -> 수정된 entity를  영속화 
+		User updatedUser= userRepository.findById(user.getId()).orElseThrow(()->{
+			throw new CustomException(ErrorCode.USERINFO_CHANGE_FAILED);
+		});
 		if(updateCount > 0) {
-			return new UserResponseDto(userRepository.findById(user.getId()).orElseThrow(()->{
-				throw new CustomException(ErrorCode.USERINFO_CHANGE_FAILED);
-			}));
+			return new UserResponseDto(updatedUser);
 		}else {
 				throw new CustomException(ErrorCode.USERINFO_CHANGE_FAILED);
 		}
 	}
 	
 	@Transactional
-	public void 회원탈퇴(String rawPassword) {
+	public void 회원탈퇴(UserRequestDto requestDto) {
+		User user = null;
 		//시큐리티 컨텍스트에서 유저 정보 가져오기
-		User user = (User) SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth == null || !(auth.getPrincipal() instanceof User)) {
+			throw new CustomException(ErrorCode.REQUEST_RELOGIN);
+		}
+		user = (User) auth.getPrincipal();
+		//탈퇴 여부 재확인
+		if(user.getDeactivatedDate() != null || user.isEnabled() != true) {
+			throw new CustomException(ErrorCode.USER_DISABLED);
+		}
 		//비밀번호 재입력 비밀번호 체크
-		if(!passwordEncoder.matches(rawPassword, user.getPassword())) {
+		if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.INVALID_PASSWORD);
 		}
-		user.setDeactivatedDate(LocalDateTime.now());
-		user.setEnabled(false);
+		//영속성 컨텍스트 작업 (시큐리티 컨텍스트에서 꺼내온 user로는 더티체킹으로 수정불가)
+		User userPersist = userRepository.findById(user.getId()).orElseThrow(()->{
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		});
+		userPersist.setDeactivatedDate(LocalDateTime.now());
+		userPersist.setEnabled(false);
 	}
 	
 
@@ -148,17 +170,18 @@ public class UserService {
 	}
 	
 	@Transactional
-	public User 회원정보로찾기(UserRequestDto requestDto) {
-		User user= quserRepository.findUserByUserInfo(requestDto);
+	public User 회원정보로찾기(UserRequestDto requestDto){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = null;
+		if(auth != null && auth.getPrincipal() instanceof User) {
+			//로그인 유저
+			user = (User)auth.getPrincipal();
+		}else {
+			//비로그인 유저
+			user= quserRepository.findUserByUserInfo(requestDto);
+		}
 		return user;
 	}
-	
-//	@Transactional
-//	public List<ReservationResponseDto> 회원예약리스트찾기(){
-//		//로그인 회원 정보 가져오기
-//		
-//		//회원의 userId가  
-//	}
 
 	
 	
