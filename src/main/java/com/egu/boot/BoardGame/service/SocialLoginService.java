@@ -7,9 +7,15 @@ import java.util.Collections;
 
 import javax.transaction.Transactional;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.egu.boot.BoardGame.config.security.JwtTokenProvider;
 import com.egu.boot.BoardGame.handler.CustomException;
@@ -17,8 +23,10 @@ import com.egu.boot.BoardGame.handler.ErrorCode;
 import com.egu.boot.BoardGame.model.User;
 import com.egu.boot.BoardGame.model.dto.KakaoDto;
 import com.egu.boot.BoardGame.model.dto.NaverDto;
+import com.egu.boot.BoardGame.model.dto.TokenDto.TokenRequestDto;
 import com.egu.boot.BoardGame.model.dto.UserDto.UserResponseDto;
 import com.egu.boot.BoardGame.repository.UserRepository;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -41,13 +49,23 @@ public class SocialLoginService {
 	
 	@Value("${social.kakao.url.profile}")
 	private String kakaoProfileUrl;
+	@Value("${social.kakao.url.deactivate}")
+	private String kakaoDeactivateUrl;
 	
 	@Value("${social.naver.url.profile}")
 	private String  naverProfileUrl;
+	@Value("${social.naver.clientId}")
+	private String naverClientId;
+	@Value("${social.naver.clientSecret}")
+	private String naverClientSecret;
+	@Value("${social.naver.url.deactivate}")
+	private String  naverDeactivateUrl;
 	
 	private final UserRepository userRepository;
 	private final WebClient webClient;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final UserService userService;
+
 
 	
 	//카카오 사용자 프로필 요청
@@ -191,22 +209,87 @@ public class SocialLoginService {
 	@Transactional
 	public <T> Object getSocialProfile(String profileRequestUrl,String accessToken, T dtoClass) {
 		try {
-			T naverUserProfile = webClient
+			T userProfile = webClient
 					.get()
 					.uri(profileRequestUrl)
 					.header("Authorization", "Bearer "+accessToken)
 					.retrieve()
 					.bodyToMono((Class<T>) dtoClass)
 					.block();
-			return naverUserProfile;
+			return userProfile;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new CustomException(ErrorCode.COMMUNICATION_ERROR);
 		}
 	}
 	
+	@Transactional
+	public long 소셜회원탈퇴(String social, TokenRequestDto requestDto) {
+		boolean result = false;
+		switch (social) {
+		case "Kakao" :
+			result = 카카오회원탈퇴(requestDto.getAccessToken()); 
+			break;
+		case "Naver":
+			result = 네이버회원탈퇴(requestDto.getAccessToken()); 
+			break;	
+		}
+		if(!result) { 
+			return 0;
+		}else {
+			return userService.회원탈퇴(null);
+		}
+	}
+	@Transactional
+	public boolean 카카오회원탈퇴(String socialAccessToken) {
+		try {
+			JSONObject result = 
+					webClient
+						.post()
+						.uri(kakaoDeactivateUrl)
+						.header("Authorization", "Bearer "+socialAccessToken)
+						.retrieve()
+						.bodyToMono(JSONObject.class)
+						.block();
+			if(result.get("id") != null) { return true; }
+			else { return false; }
+		} catch (WebClientResponseException e) {
+			throw new CustomException(ErrorCode.SOCIAL_ALREADY_DEACTIVATE);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new CustomException(ErrorCode.COMMUNICATION_ERROR);
+		}
+	}
+	@Transactional
+	public boolean 네이버회원탈퇴(String socialAccessToken) {
+		try {
+			MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+			formData.add("client_id", naverClientId);
+			formData.add("client_secret", naverClientSecret);
+			formData.add("access_token", socialAccessToken);
+			formData.add("grant_type", "delete");
+			formData.add("service_provider","NAVER");
+			
+			String result = 
+					webClient
+						.post()
+						.uri(naverDeactivateUrl)
+						.body(BodyInserters.fromFormData(formData))
+						.retrieve() 
+						.bodyToMono(String.class)
+						.block();
+			JSONObject jsonResult = (JSONObject) new JSONParser().parse(result);
+			if(jsonResult.get("result").equals("success")) { return true; }
+			else { return false; }
+		} catch (WebClientResponseException e) {
+			throw new CustomException(ErrorCode.SOCIAL_ALREADY_DEACTIVATE);	
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new CustomException(ErrorCode.COMMUNICATION_ERROR);
+		}
+	}
 	
-	//토큰 만들어서 리턴하는 메서드
+	
 	
 	
 	

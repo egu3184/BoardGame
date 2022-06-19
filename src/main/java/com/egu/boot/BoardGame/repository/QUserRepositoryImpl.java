@@ -1,5 +1,6 @@
 package com.egu.boot.BoardGame.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,7 @@ public class QUserRepositoryImpl implements QUserRepository{
 	private final PasswordEncoder passwordEncoder;
 	private final EntityManager entitymanager;
 	
+	//회원정보로 회원찾기
 	@Override
 	public User findUserByUserInfo(UserRequestDto requestDto) {
 		BooleanBuilder builder = getBooleanBuilder(requestDto);
@@ -49,6 +51,7 @@ public class QUserRepositoryImpl implements QUserRepository{
 		}				
 	}
 	
+	//회원정보 수정
 	@Override
 	public long modifyUserInfo(UserRequestDto requestDto, int id) {
 		long excute =
@@ -57,6 +60,16 @@ public class QUserRepositoryImpl implements QUserRepository{
 			.execute();
 		return excute;
 	}
+	//회원 탈퇴
+	public long deactivateUser(int id) {
+		UpdateClause<JPAUpdateClause> update = new JPAUpdateClause(entitymanager, user);
+		update.set(user.deactivatedDate, LocalDateTime.now());
+		update.set(user.isEnabled, false);
+		long result = update.where(user.id.eq(id)).execute();
+		System.out.println(result);
+		return result;
+	}
+
 	
 	//Dynamic Set을 사용해야할 때 - UpdateClause
 	private UpdateClause<JPAUpdateClause> updateClause(UserRequestDto requestDto ){
@@ -110,6 +123,7 @@ public class QUserRepositoryImpl implements QUserRepository{
 		return user.userId.eq(userId);
 	}
 
+	
 	
 
 	
