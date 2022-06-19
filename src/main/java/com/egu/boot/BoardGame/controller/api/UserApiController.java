@@ -2,6 +2,7 @@
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,8 +65,9 @@ public class UserApiController {
 	@DeleteMapping("/users")
 	public CommonResult deactivateUser(
 											@RequestBody UserRequestDto requestDto){
-		userService.회원탈퇴(requestDto);
-		return responseService.getSuccessResult();
+		if(requestDto.getPassword() == null) { return responseService.getSingleResult(ErrorCode.USERINFO_NOT_ENOUGH); }
+		long result = userService.회원탈퇴(requestDto);
+		return result > 0 ? responseService.getSuccessResult() : responseService.getFailResult(ErrorCode.USERINFO_CHANGE_FAILED);
 	}
 	
 	@GetMapping("/admin/test")
@@ -78,27 +80,6 @@ public class UserApiController {
 		System.out.println("user 이상만 들어올 수 있는 곳인데에엣");
 		return responseService.getSingleResult("권한 체크! : 뜨면 뚫린 거");
 	}
-	
-	
-//	@GetMapping("/admin/{id}")
-//	public CommonResult findUser(@PathVariable int id) {
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		User user = userService.회원찾기(id);
-//		return responseService.getSingleResult(user);
-//	}
-	
-//	@GetMapping("/member")
-//	public CommonResult findAllUser(
-//			@PageableDefault(direction = Direction.DESC, sort = "id") Pageable pageable) {
-//		Page<User> list = userService.회원리스트찾기(pageable);
-//		return responseService.getPageListResult(list);
-//	}
-//	
-//	@PutMapping("/member")
-//	public CommonResult editUser(@RequestBody User requestUser) {
-//		userService.회원수정(requestUser);
-//		return null;
-//	}
 	
 	
 }

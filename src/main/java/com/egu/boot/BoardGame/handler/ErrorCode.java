@@ -22,6 +22,7 @@ public enum ErrorCode {
 	INVALID_PASSWORD(HttpStatus.NOT_FOUND, "비밀번호가 일치하지 않습니다", 1104), //?
 	USERINFO_CHANGE_FAILED(null, "회원정보 변경에 실패하였습니다.", 1105),
 	REQUEST_RELOGIN(null, "다시 로그인하십시오.", 1106),
+	USER_DEACTIVATE_FAIL(null, "회원 탈퇴에 실패하였습니다.", 1107),
 	
 	//지점 관련
 	BRANCH_NOT_FOUND(HttpStatus.NOT_FOUND, "지점을 찾을 수 없음", 404),
@@ -48,7 +49,8 @@ public enum ErrorCode {
 	INVALID_TOKEN(null, "잘못된 타입의 토큰입니다. ", -999),
 	
 	//소셜 로그인 관련
-	COMMUNICATION_ERROR(null, "통신 중 오류가 발생하였습니다", -1004)
+	COMMUNICATION_ERROR(null, "소셜 서비스 처리 중 오류가 발생하였습니다", -1004),
+	SOCIAL_ALREADY_DEACTIVATE(null, "이미 소셜 로그인 회원 탈퇴된 계정입니다.", -1005)
 	
 	
 	

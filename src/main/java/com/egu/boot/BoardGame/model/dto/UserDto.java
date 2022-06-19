@@ -26,6 +26,7 @@ public class UserDto {
 		private Boolean privacyAgree;
 		private Boolean prAgree;
 		private String newPassword;
+		private String socialAccessToken;
 	}
 	
 	@Data
