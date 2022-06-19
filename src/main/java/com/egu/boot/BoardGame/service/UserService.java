@@ -124,8 +124,9 @@ public class UserService {
 		}
 	}
 	
+	//일반 회원탈퇴 (+ 소셜 회원탈퇴에도)
 	@Transactional
-	public void 회원탈퇴(UserRequestDto requestDto) {
+	public long 회원탈퇴(UserRequestDto requestDto) {
 		User user = null;
 		//시큐리티 컨텍스트에서 유저 정보 가져오기
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -137,16 +138,21 @@ public class UserService {
 		if(user.getDeactivatedDate() != null || user.isEnabled() != true) {
 			throw new CustomException(ErrorCode.USER_DISABLED);
 		}
-		//비밀번호 재입력 비밀번호 체크
-		if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-			throw new CustomException(ErrorCode.INVALID_PASSWORD);
+		//일반 회원탈퇴의 경우 - 비밀번호 재입력 비밀번호 체크
+		if(requestDto != null) {
+			if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+				throw new CustomException(ErrorCode.INVALID_PASSWORD);
+			}
 		}
-		//영속성 컨텍스트 작업 (시큐리티 컨텍스트에서 꺼내온 user로는 더티체킹으로 수정불가)
-		User userPersist = userRepository.findById(user.getId()).orElseThrow(()->{
-			throw new CustomException(ErrorCode.USER_NOT_FOUND);
-		});
-		userPersist.setDeactivatedDate(LocalDateTime.now());
-		userPersist.setEnabled(false);
+//		//영속성 컨텍스트 작업 (시큐리티 컨텍스트에서 꺼내온 user로는 더티체킹으로 수정불가)
+//		User userPersist = userRepository.findById(user.getId()).orElseThrow(()->{
+//			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+//		});
+//		userPersist.setDeactivatedDate(LocalDateTime.now());
+//		userPersist.setEnabled(false);
+		long result = quserRepository.deactivateUser(user.getId());
+		entityManager.close();
+		return result;
 	}
 	
 
@@ -182,6 +188,8 @@ public class UserService {
 		}
 		return user;
 	}
+
+	
 
 	
 	
