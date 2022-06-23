@@ -15,8 +15,13 @@ spring:
     - local
   messages:
     basename: i18n/exception
-    encoding: UTF-8  
+    encoding: UTF-8
+#  web:
+#    resources:
+#      static-locations:
+#      - classpath:/static-test/    
   mvc:
+#    static-path-pattern: /**
     hiddenmethod:
       filter:
         enabled: true    
@@ -29,18 +34,7 @@ spring:
       use-new-id-generator-mappings: false  
     properties:
       hibernate.format_sql: true  
-
-        
-# security:        
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: 277412036240-rh9us6fhiueu6s9i0rr8cd3h6o578e6i.apps.googleusercontent.com
-#            client-secret: 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
-#            scope:
-#            - email
-#            - profile       
+  
         
         
         
