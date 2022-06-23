@@ -1,7 +1,5 @@
 package com.egu.boot.BoardGame.handler;
 
-import java.net.http.HttpRequest;
-
 import javax.el.MethodNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
