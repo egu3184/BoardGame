@@ -17,15 +17,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 @EnableAutoConfiguration
 @ComponentScan
 @SpringBootApplication
-public class BoardGameApplication extends SpringBootServletInitializer  {
+public class BoardGameApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BoardGameApplication.class, args);
-	}
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(BoardGameApplication.class);
 	}
 
 
