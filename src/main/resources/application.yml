@@ -10,9 +10,6 @@ server:
 spring:
   config:
     use-legacy-processing: true
-  profiles:
-    active:
-    - local
   messages:
     basename: i18n/exception
     encoding: UTF-8
@@ -34,7 +31,27 @@ spring:
       use-new-id-generator-mappings: false  
     properties:
       hibernate.format_sql: true  
-  
+  jwt:
+    secret: egu9999
+
+social:
+  kakao:
+    key:  4db77100f45f0101700b0c73cfa462ae
+    clientSecret: Txvdfjsk24NxRbLr7ulMwBpJdB4A9oin
+    url:
+      login: https://kauth.kakao.com/oauth/authorize
+      token: https://kauth.kakao.com/oauth/token
+      profile: https://kapi.kakao.com/v2/user/me
+      deactivate: https://kapi.kakao.com/v1/user/unlink
+    redirect: http://localhost:2030/social/login/kakao
+  naver:
+    clientId: 9xuPd3w4pIMmt7B0I3nM
+    clientSecret: Y9Jpea_HHe
+    url:
+      profile: https://openapi.naver.com/v1/nid/me
+      deactivate: https://nid.naver.com/oauth2.0/token
+  google:
+    clientId: 829453067412-qi7uk2f6rd408agq4dtrl92v0qqamkic.apps.googleusercontent.com
         
         
         
