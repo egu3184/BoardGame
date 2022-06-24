@@ -31,7 +31,7 @@ public class ThemeService {
 
 	@Transactional
 	public void 테마수정(int id, Theme requestTheme) {
-		Theme theme =  themeRepository.findById(id).orElseThrow(()->{
+		Theme theme =  themeRepository.findById(id).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
 		theme.setThemeName(requestTheme.getThemeName());
@@ -45,7 +45,7 @@ public class ThemeService {
 	
 	@Transactional
 	public void 테마삭제(int id) {
-		themeRepository.findById(id).orElseThrow(()->{
+		themeRepository.findById(id).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
 		themeRepository.deleteById(id);

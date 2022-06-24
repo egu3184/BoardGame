@@ -114,7 +114,7 @@ public class UserService {
 		//(3)유저 정보 수정
 		long updateCount = quserRepository.modifyUserInfo(requestDto, user.getId());
 		//(b)앞에서 준영속화되었기 때문에 find로 DB에서 꺼내옴 -> 수정된 entity를  영속화 
-		User updatedUser= userRepository.findById(user.getId()).orElseThrow(()->{
+		User updatedUser= userRepository.findById(user.getId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.USERINFO_CHANGE_FAILED);
 		});
 		if(updateCount > 0) {
@@ -159,7 +159,7 @@ public class UserService {
 	@Transactional
 	public UserResponseDto 로그인(String userId, String pw) {
 		// (1) 회원 조회 
-		User user = userRepository.findByUserIdAndProvider(userId, "Application").orElseThrow(()->{
+		User user = userRepository.findByUserIdAndProvider(userId, "Application").<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
 		//(2-1) 회원 상태 체크

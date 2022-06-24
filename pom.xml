@@ -15,7 +15,7 @@
 	<name>security1-1</name>
 	<description>Board_Game</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -58,18 +58,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-
-		<!-- 뷰 연결 이후 삭제 예정 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mustache</artifactId>
 		</dependency>
 
 		<dependency>
@@ -117,11 +116,8 @@
 		    <artifactId>google-api-client</artifactId>
 		    <version>1.34.0</version>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
 
 
-	
 	</dependencies>
 
 	<build>
@@ -129,10 +125,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>
-							<groupId>org.projectlombok</groupId>
+							<groupId>org.project-lombok</groupId>
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
@@ -157,5 +154,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<packaging>war</packaging>
 </project>

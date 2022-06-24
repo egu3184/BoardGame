@@ -36,7 +36,7 @@ public class TokenService {
 		int Id = Integer.parseInt(jwtTokenProvider.getId(refreshToken));
 
 		//id값으로 User 조회
-		User user = userRepository.findById(Id).orElseThrow(()->{
+		User user = userRepository.findById(Id).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		});
 		

@@ -22,7 +22,7 @@ public class BoardGameApplication extends SpringBootServletInitializer  {
 	public static void main(String[] args) {
 		SpringApplication.run(BoardGameApplication.class, args);
 	}
-	
+
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(BoardGameApplication.class);

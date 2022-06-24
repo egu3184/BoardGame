@@ -24,7 +24,7 @@ public class PaymentService {
 
 	@Transactional
 	public PaymentResponseDto 결제정보저장(PaymentRequestDto dto) {
-		BankAccount account = accountRepository.findById(dto.getBankAccountId()).orElseThrow(()->{
+		BankAccount account = accountRepository.findById(dto.getBankAccountId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.ACCOUNT_NOT_FOUND);
 		});
 		Payment payment = new Payment(dto);

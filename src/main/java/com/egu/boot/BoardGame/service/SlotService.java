@@ -47,10 +47,10 @@ public class SlotService {
 	//슬롯 등록
 	@Transactional
 	public void 슬롯등록(SlotSaveRequestDto slotDto) {
-		Theme theme = themeRepository.findById(slotDto.getThemeId()).orElseThrow(()->{
+		Theme theme = themeRepository.findById(slotDto.getThemeId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Branch branch = branchRepository.findById(slotDto.getBranchId()).orElseThrow(()->{
+		Branch branch = branchRepository.findById(slotDto.getBranchId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
 		Slot slot = Slot.builder()
@@ -70,7 +70,7 @@ public class SlotService {
 	@Transactional
 	public void 슬롯수정(SlotSaveRequestDto requestSlot, int id) {
 		
-		Slot slot = slotRepository.findById(id).orElseThrow(()->{
+		Slot slot = slotRepository.findById(id).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		}); 
 		//slot.setTheme(requestSlot.getTheme());
@@ -86,7 +86,7 @@ public class SlotService {
 	//슬롯 삭제 
 	@Transactional
 	public void 슬롯삭제(int id) {
-		slotRepository.findById(id).orElseThrow(()->{
+		slotRepository.findById(id).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
 		slotRepository.deleteById(id);
@@ -95,7 +95,7 @@ public class SlotService {
 	//슬롯 조회
 	@Transactional
 	public SlotResponseDto 슬롯조회(int id) {
-		Slot slot = slotRepository.findById(id).orElseThrow(()->{
+		Slot slot = slotRepository.findById(id).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
 		SlotResponseDto dto = new SlotDto.SlotResponseDto(slot);
@@ -104,10 +104,10 @@ public class SlotService {
 	
 	//슬롯 검색
 	public List<SlotResponseDto> 슬롯현황조회(LocalDate slotDate, int branchId, int themeId) {
-		Theme theme = themeRepository.findById(themeId).orElseThrow(()->{
+		Theme theme = themeRepository.findById(themeId).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Branch branch = branchRepository.findById(branchId).orElseThrow(()->{
+		Branch branch = branchRepository.findById(branchId).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
 		List<Slot> slots = slotRepository.findAllBySlotDateAndBranchAndTheme(slotDate, branch, theme);
@@ -137,10 +137,10 @@ public class SlotService {
 	
 	@Transactional
 	public LocalDate 슬롯오픈날짜조회(int branchId, int themeId) {
-		Theme theme = themeRepository.findById(themeId).orElseThrow(()->{
+		Theme theme = themeRepository.findById(themeId).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Branch branch = branchRepository.findById(branchId).orElseThrow(()->{
+		Branch branch = branchRepository.findById(branchId).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
 		List<LocalDate> list = findSlotRepository.getLatestOpenedSlotDate(branch, theme);

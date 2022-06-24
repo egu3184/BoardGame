@@ -61,7 +61,7 @@ public class ReservationService {
 	//예약등록
 	@Transactional
 	public ReservationResponseDto 예약등록(ReservationRequestDto reservationRequestDto) {
-		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).orElseThrow(() -> {
+		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).<CustomException>orElseThrow(() -> {
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
 		if(slot.isReserved() == true) {	//중복 요청시
@@ -70,13 +70,13 @@ public class ReservationService {
 		if(slot.isOpened() == false || slot.isShowed() == false) {	//닫힌 슬롯 혹은 비공개 슬롯시
 			throw new CustomException(ErrorCode.SLOT_FORBIDDEN);
 		}
-		Branch branch = branchRepository.findById(reservationRequestDto.getBranchId()).orElseThrow(()->{
+		Branch branch = branchRepository.findById(reservationRequestDto.getBranchId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.BRANCH_NOT_FOUND);
 		});
-		Theme theme = themeRepository.findById(reservationRequestDto.getThemeId()).orElseThrow(()->{
+		Theme theme = themeRepository.findById(reservationRequestDto.getThemeId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.THEME_NOT_FOUND);
 		});
-		Payment payment = paymentRepository.findById(reservationRequestDto.getPaymentId()).orElseThrow(()->{
+		Payment payment = paymentRepository.findById(reservationRequestDto.getPaymentId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
 		});
 		User user = null;
@@ -114,7 +114,7 @@ public class ReservationService {
 	public ReservationResponseDto 비회원예약조회(String reservationNumber,String bookerName, String phoneNum) {
 		Reservation reservation = 
 				reservationRepository.findByReservationNumberAndBookerNameAndPhoneNumber(
-						reservationNumber,bookerName, phoneNum).orElseThrow(()->{
+						reservationNumber,bookerName, phoneNum).<CustomException>orElseThrow(()->{
 				throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
 			});
 		//비회원 예약조회시 보안을 위해 중요 정보 몇가지는 ***로 리턴
