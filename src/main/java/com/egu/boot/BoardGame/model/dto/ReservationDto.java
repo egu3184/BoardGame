@@ -59,6 +59,8 @@ public class ReservationDto {
 		private String reservationNumber;
 		private String themeImg;
 		private String phoneNumber;
+
+		private LocalDateTime depositDueDateTime;
 		
 		
 		public ReservationResponseDto(Reservation reserv) {
@@ -66,8 +68,10 @@ public class ReservationDto {
 			this.id = reserv.getId();
 			this.numUsers = reserv.getNumUsers();
 			this.bookerName = reserv.getBookerName();
+			this.reservationNumber = reserv.getReservationNumber();
 			//theme
 			this.themeName = reserv.getTheme().getThemeName();
+			this.themeImg = reserv.getTheme().getThemeImg();
 			//branch
 			this.branchName = reserv.getBranch().getBranchName();
 			//bankAccount
@@ -83,8 +87,8 @@ public class ReservationDto {
 			this.depositPrice = reserv.getPayment().getDepositPrice();
 			this.paymentStatus = reserv.getPayment().getPayStatus();
 			this.totPrice = reserv.getPayment().getTotPrice();
-			this.reservationNumber = reserv.getReservationNumber();
-			this.themeImg = reserv.getTheme().getThemeImg();
+			this.depositDueDateTime =  reserv.getPayment().getDepositDueDateTime();
+
 			this.phoneNumber = reserv.getPhoneNumber();
 		}
 		
