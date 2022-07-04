@@ -79,11 +79,11 @@ public class ReservationService {
 		Payment payment = paymentRepository.findById(reservationRequestDto.getPaymentId()).<CustomException>orElseThrow(()->{
 			throw new CustomException(ErrorCode.PAYMENT_NOT_FOUND);
 		});
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = null;
-		try {
-			user = (User) SecurityContextHolder.getContext().getAuthentication();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(auth != null && auth.getPrincipal() instanceof User) {
+			 user = (User) auth.getPrincipal();
 		}
 		Reservation reservation = new Reservation(reservationRequestDto);
 		reservation.setBranch(branch);

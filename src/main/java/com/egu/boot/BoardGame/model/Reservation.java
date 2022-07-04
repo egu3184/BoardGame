@@ -37,9 +37,9 @@ public class Reservation {
 	@Column(nullable = false)
 	private Integer numUsers;		//유저수
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="userId")
 	private User user;
 	
 	@CreationTimestamp
@@ -82,8 +82,10 @@ public class Reservation {
 	private String reservationNumber;
 	
 	private Boolean reservationStatus;
-	
-	
+
+	private LocalDateTime reservedDatetime;
+
+
 	public Reservation(ReservationRequestDto reservationRequestDto
 //			, Payment payment, Branch branch, Slot slot, Theme theme
 			) {

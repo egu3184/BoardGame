@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
 		//(1)요청의 헤더로부터 AccessToken 꺼내기
 		String token = jwtTokenProvider.resolveAccessToken(request);
-		
 		Boolean result =null;
 		//(2-B) 토큰이 담긴 요청시 
 		if(token != null) {
