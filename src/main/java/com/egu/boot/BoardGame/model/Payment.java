@@ -37,12 +37,14 @@ public class Payment {
 	@Enumerated(EnumType.STRING)
 	private PaymentStatusType payStatus; //결제 상태
 	
-	private LocalDateTime payTime; //결제 일자
-	
-	private String cardNum; //카드 번호
-	
-	private String cardHolder; //카드 소유주
-	
+//	private LocalDateTime payTime; //결제 일자
+//	private String cardNum; //카드 번호
+//	private String cardHolder; //카드 소유주
+
+	private LocalDateTime depositCompletionDateTime;	//입금완료시각
+
+	private LocalDateTime depositDueDateTime;	//입금마감시각
+
 	private String depositorName; //입금자 이름
 	
 	private long depositPrice; //예약금 금액
@@ -50,28 +52,12 @@ public class Payment {
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="bankAccountId")
 	private BankAccount bankAccount;
-	
-	
+
+
 	public  Payment(PaymentRequestDto dto) {
 		this.TotPrice = dto.getTotPrice();
 		this.depositorName = dto.getDepositorName();
 		this.depositPrice = dto.getDepositPrice();
-		
-		switch (dto.getPaymentMethod()) {
-		case "card":
-			this.paymentMethod = PaymentMethodType.Card;
-			//여기 왔으면 결제가 완료된 거겠지? - 확인 필요
-			//this.payStatus = PaymentStatusType.Completed
-			break;
-		case "onSite":
-			this.paymentMethod = PaymentMethodType.OnSite;
-			this.payStatus = PaymentStatusType.DepositWaiting;
-			break;	
-		case "accountTransfer":
-			this.paymentMethod = PaymentMethodType.AccountTransfer;
-			break;	
-		}
-		
 	}
 	
 	

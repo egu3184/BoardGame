@@ -121,6 +121,7 @@ public class SlotApiController {
 			@RequestParam(value = "branchId")String branchId,
 			@RequestParam(value = "themeId")String themeId){
 		LocalDate slotTime = slotService.슬롯오픈날짜조회(Integer.parseInt(branchId),Integer.parseInt(themeId));
+
 		return responseService.getSingleResult(slotTime);
 	}
 	
