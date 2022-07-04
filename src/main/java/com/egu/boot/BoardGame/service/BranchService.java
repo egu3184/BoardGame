@@ -27,7 +27,10 @@ public class BranchService {
 		List<Branch> branches= branchRepository.findAll();
 		List<BranchResponseDto> dtoList = new ArrayList<BranchResponseDto>();
 		for(Branch branch : branches) {
-			dtoList.add(new BranchDto.BranchResponseDto(branch));
+			//오픈 상태일 때만
+			if(branch.getIsOpened() == true) {
+				dtoList.add(new BranchDto.BranchResponseDto(branch));
+			}
 		}
 		return dtoList;
 	}

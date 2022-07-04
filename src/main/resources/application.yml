@@ -43,7 +43,7 @@ social:
       token: https://kauth.kakao.com/oauth/token
       profile: https://kapi.kakao.com/v2/user/me
       deactivate: https://kapi.kakao.com/v1/user/unlink
-    redirect: http://localhost:2030/social/login/kakao
+    redirect: https://dpsnnn.egu3184.duckdns.org/api/user/kakao
   naver:
     clientId: 9xuPd3w4pIMmt7B0I3nM
     clientSecret: Y9Jpea_HHe

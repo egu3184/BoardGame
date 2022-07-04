@@ -49,11 +49,11 @@ public class ThemeApiController {
 	}
 	
 	//테마 삭제
-	@DeleteMapping("/themes/{id}")
-	public CommonResult deleteTheme(@PathVariable int id) {
-		themeService.테마삭제(id);
-		return responseService.getSuccessResult();
-	}
+//	@DeleteMapping("/admin/themes/{id}")
+//	public CommonResult deleteTheme(@PathVariable int id) {
+//		themeService.테마삭제(id);
+//		return responseService.getSuccessResult();
+//	}
 	
 	//테마 리스트 조회
 	@GetMapping("/themes")

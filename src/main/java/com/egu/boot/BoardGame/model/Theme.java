@@ -48,6 +48,8 @@ public class Theme {
 //	private List<Slot> slots;
 	
 	private String themeImg;
+
+	private Boolean isOpened;
 	
 	
 	

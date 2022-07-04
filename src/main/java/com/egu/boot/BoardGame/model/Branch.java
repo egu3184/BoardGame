@@ -27,6 +27,12 @@ public class Branch {
 	
 	@Column
 	private Integer depositPrice;
+
+	@Column
+	private Boolean isOpened;
+
+
+
 	
 	
 	

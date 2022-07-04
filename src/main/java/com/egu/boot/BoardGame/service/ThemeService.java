@@ -41,6 +41,7 @@ public class ThemeService {
 		theme.setPlayTime(requestTheme.getPlayTime());
 		theme.setDifficulty(requestTheme.getDifficulty());
 		theme.setGenre(requestTheme.getGenre());
+		theme.setIsOpened(true);
 	}
 	
 	@Transactional
@@ -56,7 +57,8 @@ public class ThemeService {
 		List<Theme> themes = themeRepository.findAll();
 		List<ThemeResponseDto> dtoList = new ArrayList<ThemeResponseDto>();
 		for(Theme theme:themes) {
-			dtoList.add(new ThemeDto.ThemeResponseDto(theme));
+			if(theme.getIsOpened())
+				dtoList.add(new ThemeDto.ThemeResponseDto(theme));
 		}
 		return dtoList;
 	}
