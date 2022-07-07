@@ -62,7 +62,6 @@ public class SlotService {
 							.slotTime(slotDto.getSlotTime())
 							.theme(theme)
 							.build();
-
 		slotRepository.save(slot);
 	}
 
@@ -113,7 +112,10 @@ public class SlotService {
 		List<Slot> slots = slotRepository.findAllBySlotDateAndBranchAndTheme(slotDate, branch, theme);
 		List<SlotResponseDto> dtoList = new ArrayList<SlotResponseDto>();
 		for(Slot slot : slots) {
-			dtoList.add(new SlotDto.SlotResponseDto(slot));
+			//예약시간으로부터 5분전까지만
+			LocalDateTime slotDateTime = LocalDateTime.of(slot.getSlotDate(), slot.getSlotTime());
+			if(slotDateTime.isAfter(LocalDateTime.now().plusMinutes(5)))
+				dtoList.add(new SlotDto.SlotResponseDto(slot));
 		}
 		return dtoList;
 	}

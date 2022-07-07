@@ -64,6 +64,10 @@ public class ReservationService {
 		Slot slot = slotRepository.findById(reservationRequestDto.getSlotId()).<CustomException>orElseThrow(() -> {
 			throw new CustomException(ErrorCode.SLOT_NOT_FOUND);
 		});
+		LocalDateTime slotDateTime = LocalDateTime.of(slot.getSlotDate(), slot.getSlotTime());
+		if(slotDateTime.isBefore(LocalDateTime.now())){
+			throw new CustomException(ErrorCode.SLOT_FORBIDDEN);
+		}
 		if(slot.isReserved() == true) {	//중복 요청시
 			throw new CustomException(ErrorCode.SLOT_ALEADY_RESERVED);
 		}
