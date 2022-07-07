@@ -20,6 +20,7 @@ import com.egu.boot.BoardGame.model.api.CommonResult;
 import com.egu.boot.BoardGame.service.api.ResponseService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
@@ -28,11 +29,16 @@ public class ExceptionAdvice {
     ResponseService responseService;
 
 	
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    protected CommonResult defaultException(HttpServletRequest request, Exception e) {
-//        return responseService.getFailResult(ErrorCode.UNKNOWN.getCode(), ErrorCode.UNKNOWN.getMessage());
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult defaultException(HttpServletRequest request, Exception e) {
+        return responseService.getFailResult(ErrorCode.UNKNOWN.getCode(), ErrorCode.UNKNOWN.getMessage());
+    }
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected String handle404(NoHandlerFoundException e){
+        return "index";
+    }
     
     @ExceptionHandler(HttpMessageNotReadableException.class)
     protected CommonResult  handleHttpMessageNotReadableException(HttpMessageNotReadableException  e) {
@@ -48,6 +54,7 @@ public class ExceptionAdvice {
     protected CommonResult handleException(CustomException e) {
         return responseService.getFailResult(e.getErrorCode().getCode(), e.getErrorCode().getMessage());
     }
+
 
  
 }
